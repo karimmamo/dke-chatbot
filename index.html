@@ -15,41 +15,41 @@
 }
 html{font-size:16px}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;overflow-x:hidden}
-
+ 
 /* PROGRESS */
 #progress-bar{position:fixed;top:0;left:0;height:4px;background:var(--gold);transition:width .7s ease;z-index:200;width:0%}
-
+ 
 /* CHAT CONTAINER */
 #chat-wrap{max-width:680px;margin:0 auto;padding:20px 16px 200px;transition:padding-bottom .3s ease}
-
+ 
 /* MESSAGE ROW */
 .msg-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:16px;opacity:0;animation:fadeIn .35s ease forwards}
 .msg-row.user-row{flex-direction:row-reverse}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
+ 
 /* AVATAR */
 .av{width:40px;height:40px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.3px;overflow:hidden;border:2px solid var(--gold)}
 .av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 /* JONAS_PHOTO_PLACEHOLDER – replace src below with actual base64 photo */
-
-
+ 
+ 
 /* BUBBLES */
 .bbl{max-width:78%;padding:14px 18px;font-size:15px;line-height:1.65}
 .bbl.j{background:var(--white);border:1px solid var(--border);border-radius:18px 18px 18px 4px;box-shadow:0 2px 10px var(--shadow)}
 .bbl.u{background:var(--gold);color:#fff;border-radius:18px 18px 4px 18px;box-shadow:0 2px 10px var(--shadow)}
 .bbl .inf{font-size:13px;color:var(--slate);margin-top:8px;line-height:1.55;font-style:italic}
-
+ 
 /* TYPING */
 .t-bbl{display:flex;align-items:center;gap:5px;padding:14px 18px;background:var(--white);border:1px solid var(--border);border-radius:18px 18px 18px 4px;box-shadow:0 2px 10px var(--shadow)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:bounce 1.2s infinite ease-in-out}
 .dot:nth-child(2){animation-delay:.22s}
 .dot:nth-child(3){animation-delay:.44s}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
-
+ 
 /* INTERACTION AREA */
 #ia{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 16px;z-index:100}
 #ia-inner{max-width:680px;margin:0 auto}
-
+ 
 /* CHIPS */
 .chips{display:flex;flex-wrap:wrap;gap:9px;opacity:0;animation:slideUp .3s ease forwards}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -57,7 +57,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .chip:hover{border-color:var(--gold);background:#FDFAF0}
 .chip.fw{width:100%;justify-content:center}
 .chip:disabled{opacity:.55;cursor:default}
-
+ 
 /* NAME / TEXT INPUT */
 .inp-row{display:flex;gap:9px;align-items:center;opacity:0;animation:slideUp .3s ease forwards}
 .t-inp{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-size:16px;font-family:'Inter',sans-serif;background:var(--white);color:var(--charcoal);outline:none;transition:border-color .18s;min-height:48px}
@@ -65,19 +65,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .send-btn{width:48px;height:48px;background:var(--gold);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s}
 .send-btn:hover{background:var(--gold-dark)}
 .send-btn svg{width:20px;height:20px;fill:#fff}
-
+ 
 /* CTA (intro) */
 .intro-cta{width:100%;background:var(--gold);color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .18s,transform .1s;min-height:56px;opacity:0;animation:slideUp .35s ease .5s forwards}
 .intro-cta:hover{background:var(--gold-dark);transform:translateY(-1px)}
 .intro-cta:active{transform:translateY(0)}
-
+ 
 /* FREIFELD */
 .ff-row{display:flex;gap:8px;align-items:center;width:100%;margin-top:10px}
 .ff-inp{flex:1;border:1.5px solid var(--gold);border-radius:10px;padding:11px 14px;font-size:16px;font-family:'Inter',sans-serif;background:#fff;color:var(--charcoal);outline:none;min-height:46px}
 .ff-unit{font-size:13px;color:var(--slate);white-space:nowrap}
 .ff-ok{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;min-height:46px;white-space:nowrap}
 .ff-ok:hover{background:var(--gold-dark)}
-
+ 
 /* === GATE === */
 .gate-box{background:var(--white);border-radius:20px;padding:24px;border:1px solid var(--border);box-shadow:0 4px 24px var(--shadow);margin-bottom:16px;opacity:0;animation:fadeIn .4s ease forwards}
 .gauge-wrap{text-align:center;margin-bottom:22px}
@@ -104,7 +104,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .cb-lbl{font-size:13px;color:var(--slate);line-height:1.55;cursor:pointer}
 .gate-submit{width:100%;background:var(--gold);color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;min-height:56px;transition:background .18s}
 .gate-submit:hover{background:var(--gold-dark)}
-
+ 
 /* === CERTIFICATE === */
 .cert-card{background:#fff;border-radius:4px;border:1px solid #C8C0B0;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.18);opacity:0;transform:translateY(40px);animation:certIn .65s cubic-bezier(.22,1,.36,1) forwards;margin-bottom:24px}
 @keyframes certIn{to{opacity:1;transform:translateY(0)}}
@@ -158,15 +158,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .cta-blk-btn:hover{background:var(--gold-dark)}
 .restart-btn{display:block;width:100%;background:transparent;color:var(--slate);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-family:'Inter',sans-serif;cursor:pointer;margin-top:10px;transition:border-color .18s}
 .restart-btn:hover{border-color:var(--slate)}
-
+ 
 /* DISQUALIFIED */
 .dq-blk{background:#FEF2F2;border-left:4px solid var(--error);border-radius:10px;padding:16px 20px;margin:16px 0}
 .dq-ttl{font-size:14px;font-weight:700;color:var(--error);margin-bottom:6px}
 .dq-txt{font-size:14px;color:#7F1D1D;line-height:1.65}
-
+ 
 /* RESULT WRAP (for both outcomes) */
 .result-wrap{opacity:0;animation:fadeIn .4s ease forwards;margin-bottom:8px}
-
+ 
 /* ── CALC ANIMATION ── */
 .calc-box{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:20px 22px;box-shadow:0 4px 20px var(--shadow)}
 .calc-title{font-size:15px;font-weight:600;color:var(--charcoal);margin-bottom:14px}
@@ -174,11 +174,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .calc-step{font-size:14px;color:var(--charcoal);transition:opacity .3s;line-height:1.5}
 .calc-bar-wrap{background:#E2DDD4;border-radius:20px;height:8px;overflow:hidden}
 .calc-bar{height:100%;background:var(--gold);border-radius:20px;width:0%;transition:width .7s ease}
-
+ 
 /* ── CERT SPINNER ── */
 .cert-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
-
+ 
 /* ── HORIZONTAL BAROMETER ── */
 .hbar-wrap{text-align:center;margin-bottom:22px}
 .hbar-lock{font-size:26px;margin-bottom:10px}
@@ -190,24 +190,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .hbar-zone-labels span:first-child{color:var(--error)}
 .hbar-zone-labels span:last-child{color:var(--success)}
 .hbar-sub{font-size:13px;color:var(--slate);margin-top:10px}
-
+ 
 /* ── RESPONSIVE ── */
 @media(max-width:600px){
   /* Layout */
   #chat-wrap{padding:12px 10px 200px;max-width:100%}
   #ia{padding:10px 12px}
-
+ 
   /* Bubbles */
   .bbl{font-size:14px;padding:11px 14px;max-width:88%}
   .av{width:34px;height:34px;font-size:11px;flex-shrink:0}
-
+ 
   /* Chips */
   .chip{font-size:13px;padding:10px 14px;min-height:44px}
-
+ 
   /* Gate box */
   .gate-box{padding:18px 16px}
   .f-inp{font-size:16px;padding:12px 38px 12px 12px} /* prevent iOS zoom */
-
+ 
   /* Certificate */
   .cert-letterhead{padding:14px 18px}
   .cert-lh-name{font-size:12px}
@@ -224,17 +224,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
   .cert-stamp{width:60px;height:60px}
   .cert-stamp-main{font-size:7px}
   .cert-stamp-year{font-size:12px}
-
+ 
   /* Calc / spinner boxes */
   .calc-box{padding:16px 16px}
   .hbar-track{max-width:100%}
-
+ 
   /* CTA block */
   .cta-blk{padding:16px}
   .cta-blk-h{font-size:15px}
   .cta-blk-btn{font-size:15px;padding:14px 18px}
 }
-
+ 
 @media(max-width:380px){
   .cert-amt{font-size:20px}
   .bbl{max-width:92%}
@@ -243,14 +243,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 </style>
 </head>
 <body>
-
+ 
 <div id="progress-bar"></div>
 <div id="chat-wrap">
   <div id="msgs"></div>
   <div id="anchor"></div>
 </div>
 <div id="ia"><div id="ia-inner"></div></div>
-
+ 
 <script>
 // ─────────────────────────────────────────────────────────────
 // KONFIGURATION – HIER EINTRAGEN
@@ -258,18 +258,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 const CLOSE_WEBHOOK = 'CLOSE_WEBHOOK_URL_HIER';
 const MAKE_WEBHOOK  = 'MAKE_WEBHOOK_URL_HIER';
 const CALENDLY_URL  = 'CALENDLY_URL_HIER';
-
+ 
 // ── JONAS PROFILBILD ── Fügen Sie hier den Base64-String des Fotos ein (data:image/jpeg;base64,...)
 // Beispiel: const JONAS_PHOTO = 'data:image/jpeg;base64,/9j/4AAQ...';
 const JONAS_PHOTO = 'data:image/jpeg;base64,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';
-
+ 
 function avHTML() {
   if (JONAS_PHOTO) {
     return `<div class="av"><img src="${JONAS_PHOTO}" alt="Jonas Reichert"></div>`;
   }
   return `<div class="av">JR</div>`;
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────────────
@@ -287,36 +287,36 @@ const S = {
   finTo: 0,
   stufe: ''
 };
-
+ 
 // ─────────────────────────────────────────────────────────────
 // UTILS
 // ─────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const delay = ms => new Promise(r => setTimeout(r, ms));
-
+ 
 function scrollDown() {
   setTimeout(() => {
     $('anchor').scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, 60);
 }
-
+ 
 function postHeight() {
   window.parent.postMessage({ type: 'dke-height', height: document.body.scrollHeight }, '*');
 }
-
+ 
 function setProgress(p) {
   $('progress-bar').style.width = p + '%';
 }
-
+ 
 function fmtEur(n) {
   return Math.round(n).toLocaleString('de-DE');
 }
-
+ 
 function capFirst(s) {
   if (!s) return s;
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // TYPING ANIMATION
 // ─────────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@ function scrollToTypingRow() {
     window.scrollTo({ top: Math.max(0, desiredScrollTop), behavior: 'smooth' });
   });
 }
-
+ 
 function showTyping(ms) {
   return new Promise(resolve => {
     const row = document.createElement('div');
@@ -348,7 +348,7 @@ function showTyping(ms) {
     setTimeout(() => { row.remove(); resolve(); }, ms);
   });
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // BUBBLE HELPERS
 // ─────────────────────────────────────────────────────────────
@@ -360,7 +360,7 @@ function addJonas(html, info) {
   $('msgs').appendChild(row);
   scrollDown(); postHeight();
 }
-
+ 
 function addUser(txt) {
   const row = document.createElement('div');
   row.className = 'msg-row user-row';
@@ -368,7 +368,7 @@ function addUser(txt) {
   $('msgs').appendChild(row);
   scrollDown(); postHeight();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // INTERACTION AREA
 // ─────────────────────────────────────────────────────────────
@@ -379,7 +379,7 @@ function adjustBottomPad() {
   // Generous bottom padding: IA height + comfortable breathing room
   $('chat-wrap').style.paddingBottom = (h + 72) + 'px';
 }
-
+ 
 function scrollToLastMsg() {
   setTimeout(() => {
     const allRows = $('msgs').querySelectorAll('.msg-row');
@@ -393,7 +393,7 @@ function scrollToLastMsg() {
     const viewH = window.innerHeight;
     const msgH = rect.height;
     const BOTTOM_GAP = 44; // comfortable gap between message bottom and chip bar
-
+ 
     let desiredScrollTop;
     if (msgH + iaH + BOTTOM_GAP * 2 <= viewH) {
       // Message + chip bar fit together → position so message bottom sits BOTTOM_GAP above IA
@@ -406,7 +406,7 @@ function scrollToLastMsg() {
     window.scrollTo({ top: Math.max(0, desiredScrollTop), behavior: 'smooth' });
   }, 140);
 }
-
+ 
 function setIA(html) {
   $('ia-inner').innerHTML = html;
   postHeight();
@@ -418,7 +418,7 @@ function clearIA() {
   // Keep generous bottom padding during typing so text never hides behind IA bar
   $('chat-wrap').style.paddingBottom = '160px';
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // CHIPS
 // ─────────────────────────────────────────────────────────────
@@ -428,16 +428,16 @@ function chipsHTML(opts, fw) {
     `<button class="${cls}" onclick="onChip('${escQ(o.v)}','${escQ(o.l)}')">${o.l}</button>`
   ).join('')}</div>`;
 }
-
+ 
 function escQ(s) { return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
-
+ 
 function onChip(v, l) {
   document.querySelectorAll('.chip').forEach(c => c.disabled = true);
   addUser(l);
   clearIA();
   handleAnswer(v, l);
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // NAME VALIDATION
 // ─────────────────────────────────────────────────────────────
@@ -447,40 +447,40 @@ const BAD_NAMES = new Set([
   'name','vorname','anonym','mustermann','musterfrau','user','admin',
   'dummy','fake','nobody','someone','beispiel','person'
 ]);
-
+ 
 // Common German/European first names to fast-accept (optional whitelist)
 const VOWELS = new Set('aeiouäöüAEIOUÄÖÜ');
-
+ 
 function validName(raw) {
   const t = raw.trim();
   // Basic length & character set
   if (t.length < 2 || t.length > 40) return false;
   if (!/^[a-zA-ZäöüÄÖÜß\- ]+$/.test(t)) return false;
   if (/^\s*$/.test(t)) return false;
-
+ 
   // Must contain at least one vowel (a,e,i,o,u,ä,ö,ü)
   if (![...t].some(c => VOWELS.has(c))) return false;
-
+ 
   // Vowel ratio: at least 20% of letters must be vowels
   const letters = [...t].filter(c => /[a-zA-ZäöüÄÖÜß]/.test(c));
   const vowelCount = letters.filter(c => VOWELS.has(c)).length;
   if (letters.length > 0 && vowelCount / letters.length < 0.18) return false;
-
+ 
   // No run of 4+ consecutive consonants (catches shdgsdg, brtgks, etc.)
   if (/[^aeiouäöüAEIOUÄÖÜ\- ]{4,}/.test(t)) return false;
-
+ 
   // No same char repeated 3+ times in a row
   if (/(.)\1{2,}/.test(t)) return false;
-
+ 
   // Keyboard mash patterns
   if (/^[qwrtzpsdfghjklyxcvbnm]{3,}$/i.test(t)) return false;
-
+ 
   // Blocklist
   if (BAD_NAMES.has(t.toLowerCase())) return false;
-
+ 
   return true;
 }
-
+ 
 function showNameInput() {
   setIA(`<div class="inp-row">
     <input class="t-inp" id="ninp" type="text" placeholder="Ihr Vorname…" maxlength="40" autocomplete="given-name"
@@ -491,7 +491,7 @@ function showNameInput() {
   </div>`);
   setTimeout(() => { const e = $('ninp'); if(e) e.focus(); }, 350);
 }
-
+ 
 async function doName() {
   const el = $('ninp');
   if (!el) return;
@@ -514,7 +514,7 @@ async function doName() {
   S.step = 'motiv';
   showStep();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // INLINE FREIFELD (shown below chips)
 // ─────────────────────────────────────────────────────────────
@@ -530,7 +530,7 @@ function appendFreifeld(containerId, placeholder, unit, handler) {
   $('ia-inner').appendChild(wrap);
   setTimeout(() => { const e = $('ff-inp'); if(e) e.focus(); }, 200);
 }
-
+ 
 function ffVal() {
   const el = $('ff-inp');
   if (!el) return null;
@@ -538,7 +538,7 @@ function ffVal() {
   if (isNaN(v) || v < 0) { el.style.borderColor = 'var(--error)'; return null; }
   return v;
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // CALC MIN NETTO
 // ─────────────────────────────────────────────────────────────
@@ -552,21 +552,21 @@ function calcMin() {
   S.minNetto = base;
   return base;
 }
-
+ 
 function setFinRange(tier) {
   if (tier==='t1'){S.finFrom=150000;S.finTo=250000;}
   else if (tier==='t2'){S.finFrom=200000;S.finTo=320000;}
   else if (tier==='t3'){S.finFrom=280000;S.finTo=480000;}
   S.stufe = tier;
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // SHOW STEP
 // ─────────────────────────────────────────────────────────────
 async function showStep() {
   const n = S.name;
   switch (S.step) {
-
+ 
     case 'motiv': {
       setProgress(10);
       const m = `🎯 Was wäre Ihnen bei einem Immobilieninvestment das Wichtigste, ${n}?`;
@@ -582,7 +582,7 @@ async function showStep() {
       ]));
       break;
     }
-
+ 
     case 'q1': {
       setProgress(18);
       await showTyping(3200);
@@ -599,7 +599,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q1a': {
       setProgress(24);
       await showTyping(3200);
@@ -615,7 +615,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q2': {
       setProgress(30);
       await showTyping(3200);
@@ -633,7 +633,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q3': {
       setProgress(36);
       await showTyping(3200);
@@ -651,7 +651,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q4': {
       setProgress(42);
       await showTyping(3200);
@@ -669,7 +669,7 @@ async function showStep() {
       ]));
       break;
     }
-
+ 
     case 'q5': {
       setProgress(48);
       await showTyping(3200);
@@ -686,7 +686,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q5a': {
       setProgress(52);
       await showTyping(3200);
@@ -703,7 +703,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q5b': {
       setProgress(56);
       await showTyping(3200);
@@ -719,7 +719,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q6': {
       setProgress(62);
       await showTyping(3200);
@@ -738,7 +738,7 @@ async function showStep() {
       ]));
       break;
     }
-
+ 
     case 'q7': {
       setProgress(70);
       calcMin();
@@ -759,7 +759,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q8': {
       setProgress(78);
       await showTyping(3200);
@@ -775,7 +775,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'q9': {
       setProgress(86);
       await showTyping(3200);
@@ -792,7 +792,7 @@ async function showStep() {
       ], true));
       break;
     }
-
+ 
     case 'gate': {
       setProgress(94);
       clearIA();
@@ -804,43 +804,43 @@ async function showStep() {
     }
   }
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // HANDLE ANSWER
 // ─────────────────────────────────────────────────────────────
 async function handleAnswer(v, l) {
   const n = S.name;
-
+ 
   switch (S.step) {
-
+ 
     case 'motiv':
       S.answers.motiv = v;
       await showFeedback('motiv_' + v);
       S.step = 'q1'; showStep(); break;
-
+ 
     case 'q1':
       S.answers.q1 = v;
       if (v === 'kein') { await doDisqual('aufenthalt'); }
       else if (v === 'befristet') { S.step = 'q1a'; showStep(); }
       else { await showFeedback('q1_' + v); S.step = 'q2'; showStep(); }
       break;
-
+ 
     case 'q1a':
       S.answers.q1a = v;
       if (v === 'bleibt') { await doDisqual('aufenthalt'); }
       else { S.warnings.push('aufenthalt_befristet'); S.step = 'q2'; showStep(); }
       break;
-
+ 
     case 'q2':
       S.answers.q2 = v;
       await showFeedback('q2_' + v);
       S.step = 'q3'; showStep(); break;
-
+ 
     case 'q3':
       S.answers.q3 = v;
       await showFeedback('q3_' + v);
       S.step = 'q4'; showStep(); break;
-
+ 
     case 'q4':
       if (v === 'ff_miete') {
         // Re-render chips without freifeld chip selected, add input below
@@ -859,25 +859,25 @@ async function handleAnswer(v, l) {
       S.answers.q4 = v;
       await showFeedback('q4_' + v);
       S.step = 'q5'; showStep(); break;
-
+ 
     case 'q5':
       S.answers.q5 = v;
       if (v === 'such') { await doDisqual('arbeit'); }
       else if (v === 'selbst') { await showFeedback('q5_selbst'); S.step = 'q5a'; showStep(); }
       else { await showFeedback('q5_' + v); S.step = 'q6'; showStep(); }
       break;
-
+ 
     case 'q5a':
       S.answers.q5b = v;
       if (v === '1' || v === '0') S.warnings.push('abschluesse_wenig');
       await showFeedback('q5a_' + v);
       S.step = 'q5b'; showStep(); break;
-
+ 
     case 'q5b':
       S.answers.q5c = v;
       if (v === 'u60' || v === '61_99') S.warnings.push('gewinn_niedrig');
       S.step = 'q6'; showStep(); break;
-
+ 
     case 'q6':
       if (v === 'ff_kredit') {
         setIA(chipsHTML([
@@ -894,7 +894,7 @@ async function handleAnswer(v, l) {
       S.answers.q6 = v;
       await reaktionKredit(v);
       S.step = 'q7'; showStep(); break;
-
+ 
     case 'q7':
       if (v === 'ff_netto') {
         calcMin();
@@ -917,14 +917,14 @@ async function handleAnswer(v, l) {
       if (v === 't1') S.warnings.push('einkommen_knapp');
       setFinRange(v);
       S.step = 'q8'; showStep(); break;
-
+ 
     case 'q8':
       S.answers.q8 = v;
       if (v === 'schlecht') { await doDisqual('schufa'); return; }
       if (v === 'mittel') S.warnings.push('zahlung_mittel');
       await showFeedback('q8_' + v);
       S.step = 'q9'; showStep(); break;
-
+ 
     case 'q9':
       S.answers.q9 = v;
       if (v === 'u10') S.warnings.push('eigenkapital_wenig');
@@ -934,7 +934,7 @@ async function handleAnswer(v, l) {
       S.step = 'gate'; showStep(); break;
   }
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // KREDIT REAKTION
 // ─────────────────────────────────────────────────────────────
@@ -944,7 +944,7 @@ async function reaktionKredit(v) {
   else if (v === '200') msg = `👍 Das ist ein überschaubarer Betrag, den wir problemlos einplanen können.`;
   if (msg) { await showTyping(1800); addJonas(msg); await delay(300); }
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // FREUNDLICHE FEEDBACK-REAKTIONEN (nach Antworten)
 // ─────────────────────────────────────────────────────────────
@@ -973,7 +973,7 @@ const FEEDBACK = {
   q9_u20:                   `💰 Gut – das ist eine solide Basis, mit der wir arbeiten können.`,
   q9_u15:                   `👍 Das hilft bereits spürbar bei den Konditionen.`,
 };
-
+ 
 async function showFeedback(key) {
   const msg = FEEDBACK[key];
   if (!msg) return;
@@ -981,7 +981,7 @@ async function showFeedback(key) {
   addJonas(msg);
   await delay(300);
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // KALKULATIONS-ANIMATION (6-7 Sekunden)
 // ─────────────────────────────────────────────────────────────
@@ -989,7 +989,7 @@ async function showCalcAnimation() {
   await showTyping(2500);
   addJonas(`⚙️ Einen Moment, ${S.name} – ich gleiche Ihre Angaben jetzt mit unseren 47 Bankpartnern ab und berechne Ihr persönliches Finanzierungspotenzial...`);
   await delay(400);
-
+ 
   const div = document.createElement('div');
   div.style.cssText = 'margin-bottom:16px;opacity:0;animation:fadeIn .4s ease forwards';
   div.innerHTML = `
@@ -1008,7 +1008,7 @@ async function showCalcAnimation() {
     </div>`;
   $('msgs').appendChild(div);
   scrollDown(); postHeight();
-
+ 
   await delay(200);
   $('cs1').style.opacity='1'; $('cs1').innerHTML='⏳ Einkommensprüfung läuft...'; $('cbar').style.width='5%';
   await delay(1100);
@@ -1031,7 +1031,7 @@ async function showCalcAnimation() {
   await delay(400);
   div.remove();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // ZERTIFIKAT LADEANIMATION (3-4 Sekunden)
 // ─────────────────────────────────────────────────────────────
@@ -1061,7 +1061,7 @@ async function showCertLoading() {
   await delay(300);
   div.remove();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // FREIFELD HANDLERS (global)
 // ─────────────────────────────────────────────────────────────
@@ -1072,7 +1072,7 @@ async function doMieteFF() {
   clearIA();
   S.step = 'q5'; showStep();
 }
-
+ 
 async function doKreditFF() {
   const v = ffVal(); if (v === null) return;
   S.answers.q6 = String(v);
@@ -1081,7 +1081,7 @@ async function doKreditFF() {
   await reaktionKredit(v <= 0 ? '0' : (v <= 200 ? '200' : null));
   S.step = 'q7'; showStep();
 }
-
+ 
 async function doNettoFF() {
   const v = ffVal(); if (v === null) return;
   calcMin();
@@ -1099,7 +1099,7 @@ async function doNettoFF() {
   setFinRange(tier);
   S.step = 'q8'; showStep();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // DISQUALIFIED
 // ─────────────────────────────────────────────────────────────
@@ -1109,7 +1109,7 @@ const DQ_MSG = {
   aufenthalt: 'Ein dauerhaft befristeter Aufenthaltstitel ohne Entfristungsplanung ist aktuell kein akzeptiertes Kriterium bei Banken.',
   einkommen:  'Das angegebene Einkommen liegt unterhalb des von Banken geforderten Mindesteinkommens.',
 };
-
+ 
 async function doDisqual(reason) {
   setProgress(100);
   S.disqual = reason;
@@ -1136,7 +1136,7 @@ async function doDisqual(reason) {
   scrollDown(); postHeight();
   fireWebhooks();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // GAUGE RENDER (SVG half-circle)
 // ─────────────────────────────────────────────────────────────
@@ -1164,7 +1164,7 @@ function buildGaugeSVG(pct) {
     <text x="168" y="118" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif">100%</text>
   </svg>`;
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // GATE
 // ─────────────────────────────────────────────────────────────
@@ -1234,7 +1234,7 @@ function renderGate() {
   $('msgs').appendChild(div);
   scrollDown(); postHeight();
 }
-
+ 
 function chkEmail(el) {
   const v = el.value.trim();
   const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
@@ -1243,7 +1243,7 @@ function chkEmail(el) {
   $('ee').classList.toggle('on', v.length > 2 && !ok);
   return ok;
 }
-
+ 
 function chkTel(el) {
   const v = el.value.trim().replace(/[\s\-\(\)\.]/g,'');
   const ok = /^(\+49|0049|0)[1-9][0-9]{8,12}$/.test(v) && v.replace(/\D/g,'').length >= 10;
@@ -1252,7 +1252,7 @@ function chkTel(el) {
   $('te').classList.toggle('on', el.value.length > 3 && !ok);
   return ok;
 }
-
+ 
 async function doGateSubmit() {
   const eEl = $('g-email'), tEl = $('g-tel'), cb = $('g-dsgvo');
   const eOk = chkEmail(eEl), tOk = chkTel(tEl);
@@ -1271,7 +1271,7 @@ async function doGateSubmit() {
   await showCertLoading();
   renderCert();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // CERTIFICATE
 // ─────────────────────────────────────────────────────────────
@@ -1283,9 +1283,9 @@ const WARN_TXT = {
   zahlung_mittel:       'Gelegentliche Zahlungsverzögerungen – wird im Rahmen der Bonitätsprüfung berücksichtigt.',
   eigenkapital_wenig:   'Geringes Eigenkapital – Vollfinanzierung über DKE-Partner möglich.',
 };
-
+ 
 const STUFE_LBL = { t1:'Ausreichend', t2:'Gut', t3:'Sehr gut' };
-
+ 
 function renderCert() {
   const now = new Date();
   const valid = new Date(now.getTime() + 14*864e5);
@@ -1296,11 +1296,11 @@ function renderCert() {
     ? `<div class="cert-warn"><div class="cert-warn-ttl">Hinweise zur Vorprüfung</div><ul>${warns.map(w=>`<li>${w}</li>`).join('')}</ul></div>`
     : '';
   const zahlung = S.answers.q8 === 'gut' ? 'Einwandfrei' : 'Mit Anmerkungen';
-
+ 
   const div = document.createElement('div');
   div.innerHTML = `
   <div class="cert-card">
-
+ 
     <!-- LETTERHEAD -->
     <div class="cert-letterhead">
       <div>
@@ -1310,23 +1310,23 @@ function renderCert() {
       <div class="cert-lh-badge">Offiziell</div>
     </div>
     <div class="cert-gold-bar"></div>
-
+ 
     <!-- SUBJECT BAND -->
     <div class="cert-subject-band">
       <div class="cert-subject-ttl">Finanzierungszertifikat</div>
       <div class="cert-vg-pill">Nr. ${vg}</div>
     </div>
-
+ 
     <!-- BODY -->
     <div class="cert-body">
-
+ 
       <!-- META ROW -->
       <div class="cert-meta-row">
         <div class="cert-meta-item">📅 <strong>Ausgestellt:</strong> ${fmtD(now)}</div>
         <div class="cert-meta-item">⏳ <strong>Gültig bis:</strong> ${fmtD(valid)}</div>
         <div class="cert-meta-item">📍 <strong>Ort:</strong> München</div>
       </div>
-
+ 
       <!-- SALUTATION & TEXT -->
       <div class="cert-salut">Sehr geehrte/r ${S.name},</div>
       <p class="cert-txt">
@@ -1336,13 +1336,13 @@ function renderCert() {
         gemachten Angaben und dem Abgleich mit den aktuellen Kreditrichtlinien unserer
         <strong>47 geprüften Bankpartner</strong>.
       </p>
-
+ 
       <!-- RANGE BOX -->
       <div class="cert-range">
         <div class="cert-amt">${fmtEur(S.finFrom)} € – ${fmtEur(S.finTo)} €</div>
         <div class="cert-amt-lbl">Geschätzter Finanzierungsrahmen · Kapitalanlage-Immobilien</div>
       </div>
-
+ 
       <!-- DATA GRID -->
       <div class="cert-grid">
         <div class="cg-item"><div class="cg-lbl">Name</div><div class="cg-val">${S.name}</div></div>
@@ -1350,9 +1350,9 @@ function renderCert() {
         <div class="cg-item"><div class="cg-lbl">Zahlungshistorie</div><div class="cg-val">${zahlung}</div></div>
         <div class="cg-item"><div class="cg-lbl">Geprüfte Region</div><div class="cg-val">Deutschland</div></div>
       </div>
-
+ 
       ${warnsHTML}
-
+ 
       <!-- SIGNATURE BLOCK -->
       <div class="cert-sig-block">
         <div class="cert-sig-left">
@@ -1369,7 +1369,7 @@ function renderCert() {
           </div>
         </div>
       </div>
-
+ 
       <!-- DISCLAIMER & VALID BADGE -->
       <div class="cert-disc">
         Dieses Zertifikat ist keine verbindliche Kreditzusage. Die finale Finanzierungszusage
@@ -1380,7 +1380,7 @@ function renderCert() {
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         Gültig bis ${fmtD(valid)}
       </span>
-
+ 
       <!-- CTA -->
       <div class="cta-blk">
         <div class="cta-blk-h">Ihr nächster Schritt zur Kapitalanlage</div>
@@ -1393,52 +1393,15 @@ function renderCert() {
   $('msgs').appendChild(div);
   scrollDown(); postHeight();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // WEBHOOKS
 // ─────────────────────────────────────────────────────────────
 function fireWebhooks() {
   const now = new Date();
   const id = `lead_${now.getTime()}`;
-
-  const payload = {
-    id,
-    datum:             now.toLocaleString('de-DE'),
-    datum_iso:         now.toISOString(),
-    name:              S.name,
-    email:             S.email,
-    telefon:           S.tel,
-    qualifiziert:      S.qualified ? 'Ja' : 'Nein',
-    disqual_grund:     S.disqual || '',
-    warnungen:         S.warnings.join(', '),
-    investitionsmotiv: S.answers.motiv  || '',
-    aufenthalt:        S.answers.q1     || '',
-    entfristung:       S.answers.q1a    || '',
-    familienstand:     S.answers.q2     || '',
-    kinder:            S.answers.q3     || '',
-    warmmiete:         S.answers.q4     || '',
-    beschaeftigung:    S.answers.q5     || '',
-    jahresabschluesse: S.answers.q5b    || '',
-    jahresgewinn:      S.answers.q5c    || '',
-    laufende_raten:    S.answers.q6     || '',
-    einkommen_stufe:   S.answers.q7     || '',
-    zahlungshistorie:  S.answers.q8     || '',
-    eigenkapital:      S.answers.q9     || '',
-  };
-
-  const send = (url, body) => {
-    if (!url || url.includes('_HIER')) return;
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    }).catch(() => {});
-  };
-
-  send(MAKE_WEBHOOK, payload);
-  send(CLOSE_WEBHOOK, payload);
-}
-
+  const spanne = S.qualified ? `${Math.round(S.finFrom/1000)}k – ${Math.round(S.finTo/1000)}k €` : null;
+ 
   const lead = {
     id, name:S.name, email:S.email, telefon:S.tel,
     timestamp: now.toLocaleString('de-DE'), timestamp_iso: now.toISOString(),
@@ -1447,7 +1410,7 @@ function fireWebhooks() {
     einkommensstufe: S.stufe, investitionsmotiv: S.answers.motiv||'',
     warnungen: S.warnings, antworten: {...S.answers}
   };
-
+ 
   const closeP = {
     lead_name: S.name,
     contacts: [{ name:S.name,
@@ -1465,7 +1428,7 @@ function fireWebhooks() {
       dke_antworten_json:  JSON.stringify(S.answers)
     }
   };
-
+ 
   const send = (url, body) => {
     if (!url || url.includes('_HIER')) return;
     fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{});
@@ -1473,7 +1436,7 @@ function fireWebhooks() {
   send(CLOSE_WEBHOOK, closeP);
   send(MAKE_WEBHOOK,  lead);
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // RESTART
 // ─────────────────────────────────────────────────────────────
@@ -1487,7 +1450,7 @@ function doRestart() {
   clearIA();
   init();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────────────────────
@@ -1495,16 +1458,16 @@ async function init() {
   await delay(400);
   await showTyping(1200);
   addJonas('👋 Guten Tag! Ich bin Jonas Reichert, 42 Jahre alt und digitaler Finanzierungsberater der Deutschen Kapitalentwicklung GmbH. Schön, dass Sie sich die Zeit nehmen.');
-
+ 
   await delay(500);
   await showTyping(3800);
   addJonas('🏠 In den nächsten 2–3 Minuten prüfe ich gemeinsam mit Ihnen, ob Sie grundsätzlich für die Finanzierung einer Kapitalanlage-Immobilie in Frage kommen – vollständig kostenlos und unverbindlich.<br><br>🔒 Wichtig: Es wird keine SCHUFA-Anfrage gestellt und kein Eintrag erzeugt. Ich prüfe ausschließlich die Kriterien, die deutsche Banken aktuell an Kapitalanleger stellen.');
-
+ 
   await delay(600);
   setIA(`<button class="intro-cta" onclick="startChat()">Jetzt Finanzierbarkeit prüfen →</button>`);
   postHeight();
 }
-
+ 
 async function startChat() {
   clearIA();
   addUser('Jetzt Finanzierbarkeit prüfen →');
@@ -1514,13 +1477,13 @@ async function startChat() {
   S.step = 'name';
   showNameInput();
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // HEIGHT SYNC
 // ─────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => { adjustBottomPad(); postHeight(); });
 setInterval(() => { adjustBottomPad(); postHeight(); }, 2000);
-
+ 
 // Start
 init();
 </script>
