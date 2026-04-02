@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DKE Finanzierungscheck</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#D4AF37;--gold-dark:#B8941E;--gold-light:#F0E28A;
+  --charcoal:#2D2D2D;--slate:#4A5568;--bg:#FFFFFF;--bg-subtle:#F5F1E9;--white:#FFFFFF;
+  --success:#1D9E75;--warning:#E07B20;--error:#E24B4A;
+  --border:#E2DDD4;--shadow:rgba(0,0,0,0.07);
+}
+html{font-size:16px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;overflow-x:hidden}
+
+/* PROGRESS */
+#progress-bar{position:fixed;top:0;left:0;height:4px;background:var(--gold);transition:width .7s ease;z-index:200;width:0%}
+
+/* CHAT CONTAINER */
+#chat-wrap{max-width:680px;margin:0 auto;padding:20px 16px 200px;transition:padding-bottom .3s ease}
+
+/* MESSAGE ROW */
+.msg-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:16px;opacity:0;animation:fadeIn .35s ease forwards}
+.msg-row.user-row{flex-direction:row-reverse}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* AVATAR */
+.av{width:40px;height:40px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.3px;overflow:hidden;border:2px solid var(--gold)}
+.av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+/* JONAS_PHOTO_PLACEHOLDER – replace src below with actual base64 photo */
+
+
+/* BUBBLES */
+.bbl{max-width:78%;padding:14px 18px;font-size:15px;line-height:1.65}
+.bbl.j{background:var(--white);border:1px solid var(--border);border-radius:18px 18px 18px 4px;box-shadow:0 2px 10px var(--shadow)}
+.bbl.u{background:var(--gold);color:#fff;border-radius:18px 18px 4px 18px;box-shadow:0 2px 10px var(--shadow)}
+.bbl .inf{font-size:13px;color:var(--slate);margin-top:8px;line-height:1.55;font-style:italic}
+
+/* TYPING */
+.t-bbl{display:flex;align-items:center;gap:5px;padding:14px 18px;background:var(--white);border:1px solid var(--border);border-radius:18px 18px 18px 4px;box-shadow:0 2px 10px var(--shadow)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:bounce 1.2s infinite ease-in-out}
+.dot:nth-child(2){animation-delay:.22s}
+.dot:nth-child(3){animation-delay:.44s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+
+/* INTERACTION AREA */
+#ia{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 16px;z-index:100}
+#ia-inner{max-width:680px;margin:0 auto}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:9px;opacity:0;animation:slideUp .3s ease forwards}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.chip{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:11px 18px;font-size:14px;font-family:'Inter',sans-serif;color:var(--charcoal);cursor:pointer;transition:border-color .18s,background .18s;min-height:46px;display:flex;align-items:center;font-weight:500}
+.chip:hover{border-color:var(--gold);background:#FDFAF0}
+.chip.fw{width:100%;justify-content:center}
+.chip:disabled{opacity:.55;cursor:default}
+
+/* NAME / TEXT INPUT */
+.inp-row{display:flex;gap:9px;align-items:center;opacity:0;animation:slideUp .3s ease forwards}
+.t-inp{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-size:16px;font-family:'Inter',sans-serif;background:var(--white);color:var(--charcoal);outline:none;transition:border-color .18s;min-height:48px}
+.t-inp:focus{border-color:var(--gold)}
+.send-btn{width:48px;height:48px;background:var(--gold);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s}
+.send-btn:hover{background:var(--gold-dark)}
+.send-btn svg{width:20px;height:20px;fill:#fff}
+
+/* CTA (intro) */
+.intro-cta{width:100%;background:var(--gold);color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .18s,transform .1s;min-height:56px;opacity:0;animation:slideUp .35s ease .5s forwards}
+.intro-cta:hover{background:var(--gold-dark);transform:translateY(-1px)}
+.intro-cta:active{transform:translateY(0)}
+
+/* FREIFELD */
+.ff-row{display:flex;gap:8px;align-items:center;width:100%;margin-top:10px}
+.ff-inp{flex:1;border:1.5px solid var(--gold);border-radius:10px;padding:11px 14px;font-size:16px;font-family:'Inter',sans-serif;background:#fff;color:var(--charcoal);outline:none;min-height:46px}
+.ff-unit{font-size:13px;color:var(--slate);white-space:nowrap}
+.ff-ok{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;min-height:46px;white-space:nowrap}
+.ff-ok:hover{background:var(--gold-dark)}
+
+/* === GATE === */
+.gate-box{background:var(--white);border-radius:20px;padding:24px;border:1px solid var(--border);box-shadow:0 4px 24px var(--shadow);margin-bottom:16px;opacity:0;animation:fadeIn .4s ease forwards}
+.gauge-wrap{text-align:center;margin-bottom:22px}
+.gauge-svg{width:220px;height:120px}
+.gauge-lbl{font-size:13px;color:var(--slate);margin-top:6px}
+.cert-prev-wrap{position:relative;margin-bottom:20px}
+.cert-blur{filter:blur(6px);pointer-events:none;user-select:none;border-radius:12px;border:1px solid var(--border);padding:20px;background:#fff;overflow:hidden}
+.cert-blur-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:10;pointer-events:none;width:100%}
+.pulse-dot{width:10px;height:10px;background:var(--gold);border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+.gate-explain{font-size:13px;color:var(--slate);line-height:1.55;margin-bottom:16px}
+.gate-form{display:flex;flex-direction:column;gap:14px}
+.f-lbl{font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:5px;display:block}
+.f-wrap{position:relative}
+.f-inp{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 42px 12px 14px;font-size:16px;font-family:'Inter',sans-serif;background:var(--bg-subtle);color:var(--charcoal);outline:none;transition:border-color .18s,background .18s}
+.f-inp:focus{border-color:var(--gold);background:#fff}
+.f-inp.ok{border-color:var(--success)}
+.f-chk{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--success);font-size:18px;opacity:0;transition:opacity .2s}
+.f-chk.on{opacity:1}
+.f-err{font-size:12px;color:var(--error);display:none;margin-top:3px}
+.f-err.on{display:block}
+.cb-row{display:flex;gap:10px;align-items:flex-start}
+.cb-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;margin-top:2px}
+.cb-lbl{font-size:13px;color:var(--slate);line-height:1.55;cursor:pointer}
+.gate-submit{width:100%;background:var(--gold);color:#fff;border:none;border-radius:12px;padding:16px 24px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;min-height:56px;transition:background .18s}
+.gate-submit:hover{background:var(--gold-dark)}
+
+/* === CERTIFICATE === */
+.cert-card{background:#fff;border-radius:4px;border:1px solid #C8C0B0;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.18);opacity:0;transform:translateY(40px);animation:certIn .65s cubic-bezier(.22,1,.36,1) forwards;margin-bottom:24px}
+@keyframes certIn{to{opacity:1;transform:translateY(0)}}
+/* Official letterhead */
+.cert-letterhead{background:var(--charcoal);padding:18px 28px;display:flex;justify-content:space-between;align-items:center}
+.cert-lh-name{font-size:14px;font-weight:700;color:#fff;letter-spacing:.4px}
+.cert-lh-sub{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.cert-lh-badge{background:var(--gold);color:#fff;font-size:9px;font-weight:700;padding:5px 10px;border-radius:3px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+/* Gold accent bar */
+.cert-gold-bar{height:4px;background:linear-gradient(to right,var(--gold-dark),var(--gold),var(--gold-light),var(--gold))}
+/* Subject line */
+.cert-subject-band{background:var(--bg-subtle);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cert-subject-ttl{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--charcoal)}
+.cert-vg-pill{background:#F0EDE6;border:1px solid #E0D9CF;border-radius:3px;font-size:10px;font-weight:600;color:var(--slate);padding:4px 9px;letter-spacing:.4px;white-space:nowrap}
+/* Body */
+.cert-body{padding:24px 28px}
+.cert-meta-row{display:flex;gap:20px;margin-bottom:18px;flex-wrap:wrap}
+.cert-meta-item{font-size:12px;color:var(--slate)}.cert-meta-item strong{color:var(--charcoal);font-weight:600}
+.cert-salut{font-size:14px;color:var(--charcoal);margin-bottom:10px}
+.cert-txt{font-size:14px;color:var(--charcoal);line-height:1.75;margin-bottom:20px}
+.cert-range{background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,#C9A227 100%);border-radius:6px;padding:20px 24px;text-align:center;margin-bottom:22px;box-shadow:0 4px 16px rgba(212,175,55,.35)}
+.cert-amt{font-family:'Inter',sans-serif;font-size:32px;font-weight:700;color:#fff;line-height:1.15;letter-spacing:-.3px}
+.cert-amt-lbl{font-size:12px;color:rgba(255,255,255,.88);margin-top:6px;letter-spacing:.2px}
+.cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.cg-item{background:var(--bg-subtle);border:1px solid var(--border);border-radius:4px;padding:11px 14px}
+.cg-lbl{font-size:10px;color:var(--slate);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
+.cg-val{font-size:13px;font-weight:600;color:var(--charcoal)}
+.cert-warn{background:#FEF3C7;border-left:4px solid var(--warning);border-radius:4px;padding:12px 16px;margin-bottom:18px}
+.cert-warn-ttl{font-size:13px;font-weight:700;color:var(--warning);margin-bottom:6px}
+.cert-warn ul{padding-left:16px}
+.cert-warn li{font-size:13px;color:#92400E;line-height:1.6}
+/* Signature block */
+.cert-sig-block{border-top:1px solid var(--border);padding-top:20px;margin-bottom:18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.cert-sig-left{}
+.cert-sig-place{font-size:12px;color:var(--slate);margin-bottom:14px}
+.cert-sig-script{font-family:'Dancing Script',cursive;font-size:38px;font-weight:700;color:var(--charcoal);line-height:1;margin-bottom:4px;letter-spacing:.5px}
+.cert-sig-line{height:1px;background:var(--charcoal);margin-bottom:6px;width:180px}
+.cert-sig-name{font-size:12px;font-weight:700;color:var(--charcoal)}
+.cert-sig-title{font-size:11px;color:var(--slate)}
+.cert-stamp{width:72px;height:72px;border:3px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;flex-shrink:0;position:relative;opacity:.85}
+.cert-stamp-inner{text-align:center;padding:6px}
+.cert-stamp-main{font-size:8px;font-weight:800;color:var(--gold);letter-spacing:.5px;text-transform:uppercase;line-height:1.3}
+.cert-stamp-year{font-size:14px;font-weight:800;color:var(--gold);margin-top:1px}
+/* Footer strip */
+.cert-disc{font-size:11px;font-style:italic;color:#9CA3AF;line-height:1.65;margin-bottom:16px}
+.cert-valid{display:inline-flex;align-items:center;gap:6px;background:#ECFDF5;border:1px solid var(--success);border-radius:3px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--success)}
+.cta-blk{background:var(--bg-subtle);border:1px solid var(--border);border-radius:6px;padding:22px;margin-top:20px;text-align:center}
+.cta-blk-h{font-size:17px;font-weight:700;color:var(--charcoal);margin-bottom:8px}
+.cta-blk-p{font-size:14px;color:var(--slate);line-height:1.6;margin-bottom:16px}
+.cta-blk-btn{display:flex;align-items:center;justify-content:center;width:100%;background:var(--gold);color:#fff;text-decoration:none;border:none;border-radius:8px;padding:16px 24px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;min-height:56px;transition:background .18s}
+.cta-blk-btn:hover{background:var(--gold-dark)}
+.restart-btn{display:block;width:100%;background:transparent;color:var(--slate);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-family:'Inter',sans-serif;cursor:pointer;margin-top:10px;transition:border-color .18s}
+.restart-btn:hover{border-color:var(--slate)}
+
+/* DISQUALIFIED */
+.dq-blk{background:#FEF2F2;border-left:4px solid var(--error);border-radius:10px;padding:16px 20px;margin:16px 0}
+.dq-ttl{font-size:14px;font-weight:700;color:var(--error);margin-bottom:6px}
+.dq-txt{font-size:14px;color:#7F1D1D;line-height:1.65}
+
+/* RESULT WRAP (for both outcomes) */
+.result-wrap{opacity:0;animation:fadeIn .4s ease forwards;margin-bottom:8px}
+
+/* ── CALC ANIMATION ── */
+.calc-box{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:20px 22px;box-shadow:0 4px 20px var(--shadow)}
+.calc-title{font-size:15px;font-weight:600;color:var(--charcoal);margin-bottom:14px}
+.calc-steps{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.calc-step{font-size:14px;color:var(--charcoal);transition:opacity .3s;line-height:1.5}
+.calc-bar-wrap{background:#E2DDD4;border-radius:20px;height:8px;overflow:hidden}
+.calc-bar{height:100%;background:var(--gold);border-radius:20px;width:0%;transition:width .7s ease}
+
+/* ── CERT SPINNER ── */
+.cert-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── HORIZONTAL BAROMETER ── */
+.hbar-wrap{text-align:center;margin-bottom:22px}
+.hbar-lock{font-size:26px;margin-bottom:10px}
+.hbar-track{position:relative;height:30px;border-radius:15px;overflow:visible;margin:0 auto;max-width:340px;background:linear-gradient(to right,#E24B4A 0%,#E07B20 30%,#D4AF37 55%,#1D9E75 100%);box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.hbar-needle{position:absolute;top:-10px;width:5px;height:50px;background:var(--charcoal);border-radius:3px;transform:translateX(-50%);left:5%;animation:needleSlide 1s cubic-bezier(.22,1,.36,1) .6s forwards;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.hbar-needle::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:13px;height:13px;background:var(--charcoal);border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+@keyframes needleSlide{to{left:72%}}
+.hbar-zone-labels{display:flex;justify-content:space-between;padding:8px 2px 0;font-size:11px;font-weight:600;color:var(--slate)}
+.hbar-zone-labels span:first-child{color:var(--error)}
+.hbar-zone-labels span:last-child{color:var(--success)}
+.hbar-sub{font-size:13px;color:var(--slate);margin-top:10px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  /* Layout */
+  #chat-wrap{padding:12px 10px 200px;max-width:100%}
+  #ia{padding:10px 12px}
+
+  /* Bubbles */
+  .bbl{font-size:14px;padding:11px 14px;max-width:88%}
+  .av{width:34px;height:34px;font-size:11px;flex-shrink:0}
+
+  /* Chips */
+  .chip{font-size:13px;padding:10px 14px;min-height:44px}
+
+  /* Gate box */
+  .gate-box{padding:18px 16px}
+  .f-inp{font-size:16px;padding:12px 38px 12px 12px} /* prevent iOS zoom */
+
+  /* Certificate */
+  .cert-letterhead{padding:14px 18px}
+  .cert-lh-name{font-size:12px}
+  .cert-subject-band{padding:12px 18px;flex-direction:column;align-items:flex-start;gap:6px}
+  .cert-body{padding:18px 18px}
+  .cert-meta-row{gap:10px}
+  .cert-meta-item{font-size:11px}
+  .cert-amt{font-size:24px}
+  .cert-range{padding:16px 18px}
+  .cert-grid{grid-template-columns:1fr}
+  .cert-sig-block{flex-direction:column;align-items:flex-start;gap:16px}
+  .cert-sig-script{font-size:32px}
+  .cert-sig-line{width:160px}
+  .cert-stamp{width:60px;height:60px}
+  .cert-stamp-main{font-size:7px}
+  .cert-stamp-year{font-size:12px}
+
+  /* Calc / spinner boxes */
+  .calc-box{padding:16px 16px}
+  .hbar-track{max-width:100%}
+
+  /* CTA block */
+  .cta-blk{padding:16px}
+  .cta-blk-h{font-size:15px}
+  .cta-blk-btn{font-size:15px;padding:14px 18px}
+}
+
+@media(max-width:380px){
+  .cert-amt{font-size:20px}
+  .bbl{max-width:92%}
+  .chip{font-size:12px;padding:9px 12px}
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="chat-wrap">
+  <div id="msgs"></div>
+  <div id="anchor"></div>
+</div>
+<div id="ia"><div id="ia-inner"></div></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// KONFIGURATION – HIER EINTRAGEN
+// ─────────────────────────────────────────────────────────────
+const CLOSE_WEBHOOK = 'CLOSE_WEBHOOK_URL_HIER';
+const MAKE_WEBHOOK  = 'MAKE_WEBHOOK_URL_HIER';
+const CALENDLY_URL  = 'CALENDLY_URL_HIER';
+
+// ── JONAS PROFILBILD ── Fügen Sie hier den Base64-String des Fotos ein (data:image/jpeg;base64,...)
+// Beispiel: const JONAS_PHOTO = 'data:image/jpeg;base64,/9j/4AAQ...';
+const JONAS_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCAB4AHgDASIAAhEBAxEB/8QAHAAAAgMBAQEBAAAAAAAAAAAAAAIDBAUBBgcI/8QAPRAAAQIDBQYDBAkDBQEAAAAAAQIDAAQRBQYSITETFEFRUpEiYZIWU3GBFSMyM0JyobHhVFXwJCZEgqLB/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAECAwUGBP/EACcRAQACAQMBBwUAAAAAAAAAAAABERICAwShBRQVUVJTkSExYYHR/9oADAMBAAIRAxEAPwD9N4Zzqc7iDDOdTncRnvzF6UqlwzJWasFH1xU6oAKqdPKlO+sNMzF5kOs7CTkFtkDafWEEeHOldfFp8M4rim17DOdTncQYZzqc7iMxUze5KkpTI2WsCgUraqTXPM+VIndcvCUO7NmUC93GHOo2virTPT7OvPWGJa5hnOpzuIMM51OdxGc67epM4vZS9mKlh9nEtQUchr8DiHzHLNpaZvOubSH5Cz2pYqBJDpKwmuY5E04wxLX8M51OdxBhnOpzuIylTN7nGELRJWc24akoU4SMqGhz1OmVaRbS9eAzbYMtJBjwFZxkmmHxAfBWmRyEMS1rDOdTncQYZzqc7iMmXnr3PNlxVl2c1xCHHlYlfGlafrDmbvahoH6Ns1xw/hD6hTLn8YYltPDOdTncQYZzqc7iKS3ry7BOGWs7bY1YhtFUw0FKeda9oVT16EkFMtZrg2aKpUtSfHh8WeeVchy1zhiWv4Zzqc7iOFM3Q4i5TypFREzePcVlcjJb3VJQA6dnQ6gnWo1+B40z0rOXNrkmlT7bbcyU/WJbNUg+UMS1RNABTSCOq+8c/Mf3gjNdgplZESxYlr5uDGtC8RmUEpQmoITQila9xDbtZ8+4G2r3ThW4oKQlMyBUfhSOZy+J4+TLmpJSUA3OnSHCKDdUZDgTnlp8oiRNyrCA+3cqZS8yoFvDLpyX5GleedOUbM3E2bZwCMV7JxSX1LWFbcUJBFcxkKEjI8TE65SyXJZSPaValoVt9pvSVYMgkmhJ8PiGuVSDFiRfYmhu6rsuS7ezVQLaATi6NMq0GemQjNkTKMtuFFyZhovCim1Ng1RUVTnkBkDh0y5wFt5iyzOMzHtY82WEtpKN7TRQSRXFXXFTP4wzdlSExiRIXmmm6EYwxNJOeI1r5k5fKkQys7IOszAbuupD8tgUppbIGazTI0JyBJ00EWGp2WkUtCTurOJLoKyG5ZKQii6UPI5BQ8qGAgclbOamkFy902k4qYBNjMAfZUflrlrzhAZIL2/tk+UJSsOhTwqSpNElI4UxAjI6CGemZIpC13NmXC9iJwyyTQ41A4uVaYvPFxgKpHYPKTc54KS62VIXLpBcKgc00rWlADprASMSdnsOy7hvZOLSk4yhU2nC9Q0NfKooac84rLkrMKvqr5TCGSVY2hNJJVUqJ8+NBrkAOAhgZVhgIF0HXAgLU2cBWFKJCsIKk4gCSdQBlEiTKMsrUbmuBW1SypKGUGqAK4hzAOVPKAEWVKJQZg3vnSyklKjvSQkZCia+VQfn5xLZ1grmHw9LXptCYlmV0KEOAjEPwkjKlCMqfPhFZ60ZGQYxzN0ZhptLhWkpZSoAgABR5HQceEW2Lwy9mol5eVu7aLRmAp3YNMJBRReElQrlwPzEB6ZIoAKk04mCPPNXpnHnW203dtRAUpIUtxGEJSTr8tSI9DAZqvvHPzn94IFfeOfnP7wRjLRTTL3oIUTP2ZXZ+HC0rDjxJ15igUNRrA3K3nUw6Hp+QDqgnBsmyMJxAnM11TiGmpiJNy7IRKKlEzE4GlKQum9GoKQQKcta5cY6LnWWFJWJudxJASCZknIaA11GZyPONmZlMXpbBULQstROEJC2lAVxZ6a5frHUN3pcabUp+zmVbEYkFBJ2mI1zGVKYeGohTc6yC040HZkNrU2rDvBISUEkYa6Zk6QnsTZGFA3qfxJFMW+KqrMHPPyHaAZTd7guXQX7LKSurq0JUPDrShrwy4614RbWzbonlrTNym74lFDRR4lJpkCfI8YrTN0LJmltKcfmsLTWySgTJw4anUcftHXy5QIujZiVvOGbnVuOtqbK1zJJSFJoacjTlAIuVvatlBTaNmtvYakbMlJVT7OlSOJIpppFh9u8xfe2ExZQZKxs8SV4gmgqD5nP9IjdujZTrDbRfmkltK0pcEyrGArDiz5nCM9deZiAXIsmiazc8VCmJW8kFRANK9zlASrlr2KQCm0LNS5QVTslFJOefOmnaONyV7ApWO05AhVaUaPgy1GXA84jduRZa2gludnmnAjAHBMlR+JByJ+MT+yVlbkJQzE2pG12pUqZUVKNCKEnhnpzzgJCxeTf2lpnbPMqNmHWy2rEdMZHInhnEJk72pbRgtOzluAnFjZISofLMQrFy7Il3EuImJzEkamaUakUoTzOQj0IcQABtEnzJEBjyrN42psKmZqz35YKHgQ2pKyDrnoKa/KkbULtUdae8BebAqXE0+MBnq+8c/Of3gjlcSlKGilEiCMZaObNHSINmjpENBEBdmjpEGzR0iGggF2aOkQbNHSIaCAXZo6RBs0dIhoIBdmjpEeet29CLKm91ZlUvOJAKyo0Arwj0ceBvXLvS1uKmVMlTa8Kkkg4TQUpl8I5fa/I3djYz2pqbj6+UPo4ujTr11qWPbp7+gl/WYPbl7+3y/rMYrlorcSU7qwmop4W6R36ScJJXLMLUa5qb0JNY814pyfdn4h9/d9v09Wz7dPf2+X9Zg9unx/wJf1mMYWksAASkuKEEHZ5iOi0lAiklK04jZ651h4pyfd6R/Du+j09W17ezP8ARMeswRh/SC6qVurJUSM8GgA4QQ8U5Puz8Qd30enq+r7kr3qfT/MG5K94PT/MZLd1pxtrZi8drEcKqTkKAcv884tqsJ1U+uZNrWhs1Vwy+MYEjDSgyqc88zqI99jDi3K3uSvej0/zBuSvej0/zGKLqWgFtD2ltJTQ+2lRFTQAAA8M886n55xaYu7MtTTbyretNxCKHZKWMKiDXPLjpSGMFy0NyV7wen+YNyV7wen+Yo2jYEzPKBbty0pYBsoo2pNCqtcWmvCIpi7MzMzSnVW7aSWlpCVNIWEgjDTUZjPPKkMYLlp7kr3g9MG5K94PTFNNguJnNuLTnQ2D4WQvwgYaU8xx5146UrMXXm5eWdZbvBaKcaUJSfD9XhVUlNRxGRrWGMFy1dyV71Pp/mOGQKtXEn/rGWbsTpdUReO0w0UkBAUKg0yNf8/eobrzZCf9w2qFCgKgseIDgRpx1FIYwXLRckdmgqGFVMyKUiHZoP4R2iaVkU2ZJvJMw88VkqK3VFRJwgf/ACI06CKaopaJc2aOkdoNmjpHaGgiqS7NHSO0ENBALgHM94MA5nvDQRIXAOZ7wYBzPeGggFwDme8GAcz3hoIBcA5nvBgHM94aCAXAOZ7wYBzPeGggFCBWuvxhoIIgEEEcOkB52cvtKS0wtluXdfCDhKwoAE+UEePKkyc0+iYlwtaVFOFZphNYI8Xq7Z5VzeuI/Ffbo6scXb8r/b6zujvNHcwbo7zR3MZZsi8RQkC3kBQoD/pxQ0OvP45mtO00zZltvmWLdrhhbSVJcUGwoOmuSinIVyz+dKaj3OEOPcr25u80dzBujvNHcxipsu9h2iFW7LhBBwrDAKs6+WVMqaxKiy7xLlU7W2G0zQcWrElFUhNAEilBXQ1B6uNIYQXLV3N3mjuYNzd5o7mM9NmXg3d1KrdbLykAIWJVICF1BrTiMiKcjCSdn3mE0FzdtS5YSsfVol01WkEanhXPLhz5MILlp7m7zR3MG6O80dzFBNm2+EzOO221KWhSWqSwSGziyJ1qQKj9eEQpse8YU3W8KChIAUndU1VrXPtz0MMILlq7o7zR3MQkFKilQoRCSsnbDM+XHrSaelCpZ2JZooAmqfF5aef7TTJrMq8gIrq0xEJiSQQQRRYQQQQFd6QlZheN2XacVzUgEwRYgik7eiZuYhOU+aTYTfUv1wbCb6l+uCCPoxZ2NhN9S/XBsJvqX64IIYljYTfUv1wbCb6l+uCCGJY2E31L9cGwm+pfrgghiWNhN9S/XHBKvD8H/qCCGJbu7PdA9UG7PdA9UEERjBlI3Z7oHqjhl3gK7PsYIIYQZIwawQQRmu//2Q==';
+
+function avHTML() {
+  if (JONAS_PHOTO) {
+    return `<div class="av"><img src="${JONAS_PHOTO}" alt="Jonas Reichert"></div>`;
+  }
+  return `<div class="av">JR</div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+const S = {
+  step: 'intro',
+  name: '',
+  email: '',
+  tel: '',
+  answers: {},
+  warnings: [],
+  disqual: null,
+  qualified: false,
+  minNetto: 0,
+  finFrom: 0,
+  finTo: 0,
+  stufe: ''
+};
+
+// ─────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+function scrollDown() {
+  setTimeout(() => {
+    $('anchor').scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, 60);
+}
+
+function postHeight() {
+  window.parent.postMessage({ type: 'dke-height', height: document.body.scrollHeight }, '*');
+}
+
+function setProgress(p) {
+  $('progress-bar').style.width = p + '%';
+}
+
+function fmtEur(n) {
+  return Math.round(n).toLocaleString('de-DE');
+}
+
+function capFirst(s) {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// ─────────────────────────────────────────────────────────────
+// TYPING ANIMATION
+// ─────────────────────────────────────────────────────────────
+function scrollToTypingRow() {
+  // Scroll so the typing indicator is comfortably above the IA bar — never buried at bottom edge
+  requestAnimationFrame(() => {
+    const row = $('typing-row');
+    if (!row) return;
+    const ia = $('ia');
+    const iaH = ia ? ia.offsetHeight : 0;
+    const rect = row.getBoundingClientRect();
+    const viewH = window.innerHeight;
+    const BOTTOM_GAP = 64; // generous breathing room below typing bubble
+    const desiredBottomInView = viewH - iaH - BOTTOM_GAP;
+    const desiredScrollTop = window.scrollY + rect.bottom - desiredBottomInView;
+    window.scrollTo({ top: Math.max(0, desiredScrollTop), behavior: 'smooth' });
+  });
+}
+
+function showTyping(ms) {
+  return new Promise(resolve => {
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+    row.id = 'typing-row';
+    row.innerHTML = `${avHTML()}<div class="t-bbl"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+    $('msgs').appendChild(row);
+    postHeight();
+    scrollToTypingRow();
+    setTimeout(() => { row.remove(); resolve(); }, ms);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// BUBBLE HELPERS
+// ─────────────────────────────────────────────────────────────
+function addJonas(html, info) {
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  const infoHTML = info ? `<div class="inf">${info}</div>` : '';
+  row.innerHTML = `${avHTML()}<div class="bbl j">${html}${infoHTML}</div>`;
+  $('msgs').appendChild(row);
+  scrollDown(); postHeight();
+}
+
+function addUser(txt) {
+  const row = document.createElement('div');
+  row.className = 'msg-row user-row';
+  row.innerHTML = `<div class="bbl u">${txt}</div>`;
+  $('msgs').appendChild(row);
+  scrollDown(); postHeight();
+}
+
+// ─────────────────────────────────────────────────────────────
+// INTERACTION AREA
+// ─────────────────────────────────────────────────────────────
+function adjustBottomPad() {
+  const ia = $('ia');
+  if (!ia) return;
+  const h = ia.offsetHeight;
+  // Generous bottom padding: IA height + comfortable breathing room
+  $('chat-wrap').style.paddingBottom = (h + 72) + 'px';
+}
+
+function scrollToLastMsg() {
+  setTimeout(() => {
+    const allRows = $('msgs').querySelectorAll('.msg-row');
+    if (!allRows.length) { scrollDown(); return; }
+    // Always target last Jonas message (not user bubble)
+    const jonasMsgs = $('msgs').querySelectorAll('.msg-row:not(.user-row)');
+    const target = jonasMsgs.length ? jonasMsgs[jonasMsgs.length - 1] : allRows[allRows.length - 1];
+    const ia = $('ia');
+    const iaH = ia ? ia.offsetHeight : 0;
+    const rect = target.getBoundingClientRect();
+    const viewH = window.innerHeight;
+    const msgH = rect.height;
+    const BOTTOM_GAP = 44; // comfortable gap between message bottom and chip bar
+
+    let desiredScrollTop;
+    if (msgH + iaH + BOTTOM_GAP * 2 <= viewH) {
+      // Message + chip bar fit together → position so message bottom sits BOTTOM_GAP above IA
+      const desiredBottomInView = viewH - iaH - BOTTOM_GAP;
+      desiredScrollTop = window.scrollY + rect.bottom - desiredBottomInView;
+    } else {
+      // Long message → anchor its top with a small top margin
+      desiredScrollTop = window.scrollY + rect.top - 16;
+    }
+    window.scrollTo({ top: Math.max(0, desiredScrollTop), behavior: 'smooth' });
+  }, 140);
+}
+
+function setIA(html) {
+  $('ia-inner').innerHTML = html;
+  postHeight();
+  // Small delay so IA bar has rendered its full height before we measure+scroll
+  setTimeout(() => { adjustBottomPad(); scrollToLastMsg(); }, 100);
+}
+function clearIA() {
+  $('ia-inner').innerHTML = '';
+  // Keep generous bottom padding during typing so text never hides behind IA bar
+  $('chat-wrap').style.paddingBottom = '160px';
+}
+
+// ─────────────────────────────────────────────────────────────
+// CHIPS
+// ─────────────────────────────────────────────────────────────
+function chipsHTML(opts, fw) {
+  const cls = fw ? 'chip fw' : 'chip';
+  return `<div class="chips">${opts.map(o =>
+    `<button class="${cls}" onclick="onChip('${escQ(o.v)}','${escQ(o.l)}')">${o.l}</button>`
+  ).join('')}</div>`;
+}
+
+function escQ(s) { return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+function onChip(v, l) {
+  document.querySelectorAll('.chip').forEach(c => c.disabled = true);
+  addUser(l);
+  clearIA();
+  handleAnswer(v, l);
+}
+
+// ─────────────────────────────────────────────────────────────
+// NAME VALIDATION
+// ─────────────────────────────────────────────────────────────
+const BAD_NAMES = new Set([
+  'test','asdf','xxxx','abc','xyz','aaa','bbb','qwerty','1234','0000',
+  'hallo','hello','hi','hey','blah','foo','bar','nn','na','nein','ja',
+  'name','vorname','anonym','mustermann','musterfrau','user','admin',
+  'dummy','fake','nobody','someone','beispiel','person'
+]);
+
+// Common German/European first names to fast-accept (optional whitelist)
+const VOWELS = new Set('aeiouäöüAEIOUÄÖÜ');
+
+function validName(raw) {
+  const t = raw.trim();
+  // Basic length & character set
+  if (t.length < 2 || t.length > 40) return false;
+  if (!/^[a-zA-ZäöüÄÖÜß\- ]+$/.test(t)) return false;
+  if (/^\s*$/.test(t)) return false;
+
+  // Must contain at least one vowel (a,e,i,o,u,ä,ö,ü)
+  if (![...t].some(c => VOWELS.has(c))) return false;
+
+  // Vowel ratio: at least 20% of letters must be vowels
+  const letters = [...t].filter(c => /[a-zA-ZäöüÄÖÜß]/.test(c));
+  const vowelCount = letters.filter(c => VOWELS.has(c)).length;
+  if (letters.length > 0 && vowelCount / letters.length < 0.18) return false;
+
+  // No run of 4+ consecutive consonants (catches shdgsdg, brtgks, etc.)
+  if (/[^aeiouäöüAEIOUÄÖÜ\- ]{4,}/.test(t)) return false;
+
+  // No same char repeated 3+ times in a row
+  if (/(.)\1{2,}/.test(t)) return false;
+
+  // Keyboard mash patterns
+  if (/^[qwrtzpsdfghjklyxcvbnm]{3,}$/i.test(t)) return false;
+
+  // Blocklist
+  if (BAD_NAMES.has(t.toLowerCase())) return false;
+
+  return true;
+}
+
+function showNameInput() {
+  setIA(`<div class="inp-row">
+    <input class="t-inp" id="ninp" type="text" placeholder="Ihr Vorname…" maxlength="40" autocomplete="given-name"
+      onkeydown="if(event.key==='Enter')doName()">
+    <button class="send-btn" onclick="doName()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>`);
+  setTimeout(() => { const e = $('ninp'); if(e) e.focus(); }, 350);
+}
+
+async function doName() {
+  const el = $('ninp');
+  if (!el) return;
+  const raw = el.value;
+  if (!validName(raw)) {
+    addUser(raw || '…');
+    clearIA();
+    await showTyping(1800);
+    addJonas('🙏 Das scheint kein gültiger Vorname zu sein – bitte geben Sie Ihren echten Vornamen ein.');
+    showNameInput();
+    return;
+  }
+  const name = capFirst(raw.trim().split(/\s+/)[0].toLowerCase());
+  S.name = name;
+  addUser(raw.trim());
+  clearIA();
+  await showTyping(2000);
+  addJonas(`😊 Schön, ${name}! Dann legen wir direkt los.`);
+  await delay(500);
+  S.step = 'motiv';
+  showStep();
+}
+
+// ─────────────────────────────────────────────────────────────
+// INLINE FREIFELD (shown below chips)
+// ─────────────────────────────────────────────────────────────
+function appendFreifeld(containerId, placeholder, unit, handler) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ff-row';
+  wrap.id = containerId;
+  wrap.innerHTML = `
+    <input class="ff-inp" id="ff-inp" type="number" min="0" placeholder="${placeholder}"
+      onkeydown="if(event.key==='Enter')${handler}()">
+    <span class="ff-unit">${unit}</span>
+    <button class="ff-ok" onclick="${handler}()">OK</button>`;
+  $('ia-inner').appendChild(wrap);
+  setTimeout(() => { const e = $('ff-inp'); if(e) e.focus(); }, 200);
+}
+
+function ffVal() {
+  const el = $('ff-inp');
+  if (!el) return null;
+  const v = parseFloat(el.value);
+  if (isNaN(v) || v < 0) { el.style.borderColor = 'var(--error)'; return null; }
+  return v;
+}
+
+// ─────────────────────────────────────────────────────────────
+// CALC MIN NETTO
+// ─────────────────────────────────────────────────────────────
+function calcMin() {
+  let base = S.answers.q2 === 'verheiratet' ? 3600 : 3000;
+  base += parseInt(S.answers.q3 || '0', 10) * 300;
+  const miete = parseFloat(S.answers.q4 || '0');
+  if (miete >= 1100) base += 400;
+  else if (miete >= 900) base += 200;
+  base += parseFloat(S.answers.q6 || '0');
+  S.minNetto = base;
+  return base;
+}
+
+function setFinRange(tier) {
+  if (tier==='t1'){S.finFrom=150000;S.finTo=250000;}
+  else if (tier==='t2'){S.finFrom=200000;S.finTo=320000;}
+  else if (tier==='t3'){S.finFrom=280000;S.finTo=480000;}
+  S.stufe = tier;
+}
+
+// ─────────────────────────────────────────────────────────────
+// SHOW STEP
+// ─────────────────────────────────────────────────────────────
+async function showStep() {
+  const n = S.name;
+  switch (S.step) {
+
+    case 'motiv': {
+      setProgress(10);
+      const m = `🎯 Was wäre Ihnen bei einem Immobilieninvestment das Wichtigste, ${n}?`;
+      await showTyping(3200);
+      addJonas(m);
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'vermogensaufbau',l:'📈 Vermögensaufbau'},
+        {v:'vermogenssicherung',l:'🛡️ Vermögenssicherung'},
+        {v:'steuern',l:'💸 Steuern sparen'},
+        {v:'passiv',l:'💤 Passives Einkommen aufbauen'},
+        {v:'unsicher',l:'🤔 Ich bin mir noch nicht sicher'},
+      ]));
+      break;
+    }
+
+    case 'q1': {
+      setProgress(18);
+      await showTyping(3200);
+      addJonas(
+        `🌍 Wie ist Ihr Aufenthaltsstatus in Deutschland, ${n}?`,
+        'Banken vergeben Immobilienkredite nur an Personen mit gesichertem Aufenthaltsrecht. Das ist eine formale Bankvoraussetzung – keine persönliche Bewertung.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'eu',l:'🇩🇪 EU-Bürger oder deutscher Staatsbürger'},
+        {v:'unbefristet',l:'✅ Aufenthaltstitel (unbefristet)'},
+        {v:'befristet',l:'⏳ Aufenthaltstitel (befristet)'},
+        {v:'kein',l:'❌ Kein Aufenthaltstitel'},
+      ], true));
+      break;
+    }
+
+    case 'q1a': {
+      setProgress(24);
+      await showTyping(3200);
+      addJonas(
+        `📋 Ist eine Entfristung oder Einbürgerung konkret in Planung, ${n}?`,
+        'Einige Banken akzeptieren befristete Aufenthaltstitel, wenn eine Entfristung absehbar ist. Das prüfen wir gerne gemeinsam.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'bald_pass',l:'✅ Ja, Einbürgerung läuft bereits'},
+        {v:'bald_unbefristet',l:'📋 Ja, Entfristung wurde beantragt'},
+        {v:'bleibt',l:'❌ Nein, bleibt dauerhaft befristet'},
+      ], true));
+      break;
+    }
+
+    case 'q2': {
+      setProgress(30);
+      await showTyping(3200);
+      addJonas(
+        `👨‍👩‍👧 Wie ist Ihr Familienstand, ${n}?`,
+        'Bei Verheirateten oder eingetragenen Partnerschaften zählt das gemeinsame Haushaltsnetto. Das kann Ihren Finanzierungsrahmen deutlich verbessern.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'ledig',l:'🧑 Ledig'},
+        {v:'verheiratet',l:'💑 Verheiratet / Lebenspartnerschaft'},
+        {v:'getrennt',l:'↔️ Getrennt lebend'},
+        {v:'geschieden',l:'📄 Geschieden'},
+        {v:'verwitwet',l:'🕊️ Verwitwet'},
+      ], true));
+      break;
+    }
+
+    case 'q3': {
+      setProgress(36);
+      await showTyping(3200);
+      addJonas(
+        `👶 Leben Kinder in Ihrem Haushalt, ${n}?`,
+        'Banken berücksichtigen den Unterhaltsbedarf von Kindern standardmäßig in der Haushaltsrechnung. Das ist kein Ausschlussgrund – sondern ein normaler Kalkulationsposten.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'0',l:'✨ Keine Kinder'},
+        {v:'1',l:'👶 Ein Kind'},
+        {v:'2',l:'👶👶 Zwei Kinder'},
+        {v:'3',l:'👶👶👶 Drei Kinder'},
+        {v:'4',l:'👶👶👶👶 Vier oder mehr Kinder'},
+      ], true));
+      break;
+    }
+
+    case 'q4': {
+      setProgress(42);
+      await showTyping(3200);
+      addJonas(
+        `🏢 Wie hoch ist Ihre aktuelle monatliche Warmmiete, ${n}?`,
+        'Ihre Mietbelastung fließt direkt in die Haushaltsrechnung der Bank ein. Wer bereits hohe Miete zahlt, benötigt entsprechend mehr Einkommen für denselben Finanzierungsrahmen.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'0',l:'🏠 Mietfrei'},
+        {v:'800',l:'💚 Bis 800 €'},
+        {v:'1000',l:'💛 900 – 1.100 €'},
+        {v:'1200',l:'🔴 Über 1.100 €'},
+        {v:'ff_miete',l:'✏️ Eigene Eingabe'},
+      ]));
+      break;
+    }
+
+    case 'q5': {
+      setProgress(48);
+      await showTyping(3200);
+      addJonas(
+        `💼 Was beschreibt Ihre aktuelle berufliche Situation am besten, ${n}?`,
+        'Banken bewerten Einkommenssicherheit unterschiedlich. Angestellte und Beamte haben strukturelle Vorteile. Selbstständige können ebenfalls finanzieren – benötigen aber zusätzliche Unterlagen.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'angestellt',l:'👔 Angestellt (unbefristet)'},
+        {v:'beamter',l:'🏛️ Beamter / Beamtin'},
+        {v:'selbst',l:'💼 Selbstständig / Freiberuflich'},
+        {v:'such',l:'🔍 Arbeitssuchend / ALG-Bezug'},
+      ], true));
+      break;
+    }
+
+    case 'q5a': {
+      setProgress(52);
+      await showTyping(3200);
+      addJonas(
+        `📊 Wie viele Jahresabschlüsse können Sie aktuell vorweisen, ${n}?`,
+        'Banken fordern bei Selbstständigen mindestens zwei vollständige Jahresabschlüsse, um das Einkommen verlässlich einschätzen zu können.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'3plus',l:'✅ Drei oder mehr Jahresabschlüsse'},
+        {v:'2',l:'📊 Zwei Jahresabschlüsse'},
+        {v:'1',l:'📋 Einen Jahresabschluss'},
+        {v:'0',l:'📝 Noch keinen Jahresabschluss'},
+      ], true));
+      break;
+    }
+
+    case 'q5b': {
+      setProgress(56);
+      await showTyping(3200);
+      addJonas(
+        `💰 Wie hoch ist Ihr durchschnittlicher Jahresgewinn nach Steuern, ${n}?`,
+        'Banken berechnen den Durchschnitt der letzten zwei Jahresabschlüsse. Einmalige Spitzenjahre werden nicht vollständig angerechnet.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'u60',l:'📉 Unter 60.000 €'},
+        {v:'61_99',l:'📊 60.000 – 99.000 €'},
+        {v:'100plus',l:'🚀 100.000 € und mehr'},
+      ], true));
+      break;
+    }
+
+    case 'q6': {
+      setProgress(62);
+      await showTyping(3200);
+      addJonas(
+        `🚗 Haben Sie aktuell laufende Kredit- oder Leasingraten, ${n}?`,
+        'Dazu zählen beispielsweise Autokredit, Auto-Leasing, Konsumkredite, Ratenkäufe oder bestehende Immobilienkredite. Diese Verpflichtungen fließen direkt in die Haushaltsrechnung der Bank ein.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'0',l:'✅ Keine laufenden Raten'},
+        {v:'200',l:'💚 Bis 200 €/Mon.'},
+        {v:'325',l:'💛 200 – 400 €/Mon.'},
+        {v:'500',l:'🟠 400 – 600 €/Mon.'},
+        {v:'700',l:'🔴 Über 600 €/Mon.'},
+        {v:'ff_kredit',l:'✏️ Eigene Eingabe'},
+      ]));
+      break;
+    }
+
+    case 'q7': {
+      setProgress(70);
+      calcMin();
+      const M = S.minNetto;
+      const isV = S.answers.q2 === 'verheiratet';
+      const msg = isV
+        ? `Wie viel verdienen Sie und Ihr Partner zusammen netto im Monat, ${n}?`
+        : `Wie viel verdienen Sie netto im Monat, ${n}?`;
+      await showTyping(3200);
+      addJonas('💶 ' + msg, 'Das monatliche Nettoeinkommen ist die zentrale Kennzahl für Banken. Es bestimmt maßgeblich, welchen Finanzierungsrahmen die Bank bereit ist zu vergeben.');
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'under', l:`Unter ${fmtEur(M)} €`},
+        {v:'t1',    l:`${fmtEur(M)} bis ${fmtEur(M+500)} €`},
+        {v:'t2',    l:`${fmtEur(M+500)} bis ${fmtEur(M+1500)} €`},
+        {v:'t3',    l:`Über ${fmtEur(M+1500)} €`},
+        {v:'ff_netto', l:'Eigene Eingabe'},
+      ], true));
+      break;
+    }
+
+    case 'q8': {
+      setProgress(78);
+      await showTyping(3200);
+      addJonas(
+        `📅 Wie würden Sie Ihre bisherige Zahlungshistorie beschreiben, ${n}?`,
+        'Banken prüfen im Rahmen der Kreditvergabe die Zahlungshistorie der vergangenen Jahre. Kleinere Unregelmäßigkeiten sind nicht automatisch ein Ausschlussgrund – entscheidend ist das Gesamtbild.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'gut',l:'✅ Einwandfrei – alles immer pünktlich bezahlt'},
+        {v:'mittel',l:'⚠️ Gelegentlich kleinere Verzögerungen'},
+        {v:'schlecht',l:'❌ Es gab größere Zahlungsprobleme'},
+      ], true));
+      break;
+    }
+
+    case 'q9': {
+      setProgress(86);
+      await showTyping(3200);
+      addJonas(
+        `🏦 Haben Sie Ersparnisse oder Eigenkapital zur Verfügung, ${n}?`,
+        'Eigenkapital verbessert Ihre Konditionen bei der Bank spürbar – ist aber keine zwingende Voraussetzung. Die Deutsche Kapitalentwicklung GmbH arbeitet mit Finanzierungspartnern zusammen, die auch Vollfinanzierungen ermöglichen.'
+      );
+      await delay(220);
+      setIA(chipsHTML([
+        {v:'u10',l:'💭 Wenig oder gar nichts'},
+        {v:'u15',l:'💰 Bis 15.000 €'},
+        {v:'u20',l:'💰💰 Bis 20.000 €'},
+        {v:'u25plus',l:'🏆 25.000 € und mehr'},
+      ], true));
+      break;
+    }
+
+    case 'gate': {
+      setProgress(94);
+      clearIA();
+      await showTyping(2000);
+      addJonas(`✅ Die Prüfung ist abgeschlossen, ${n}! Ihr persönliches Finanzierungszertifikat wurde berechnet. Geben Sie jetzt Ihre Kontaktdaten ein – wir senden es Ihnen sofort zu.`);
+      await delay(400);
+      renderGate();
+      break;
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// HANDLE ANSWER
+// ─────────────────────────────────────────────────────────────
+async function handleAnswer(v, l) {
+  const n = S.name;
+
+  switch (S.step) {
+
+    case 'motiv':
+      S.answers.motiv = v;
+      await showFeedback('motiv_' + v);
+      S.step = 'q1'; showStep(); break;
+
+    case 'q1':
+      S.answers.q1 = v;
+      if (v === 'kein') { await doDisqual('aufenthalt'); }
+      else if (v === 'befristet') { S.step = 'q1a'; showStep(); }
+      else { await showFeedback('q1_' + v); S.step = 'q2'; showStep(); }
+      break;
+
+    case 'q1a':
+      S.answers.q1a = v;
+      if (v === 'bleibt') { await doDisqual('aufenthalt'); }
+      else { S.warnings.push('aufenthalt_befristet'); S.step = 'q2'; showStep(); }
+      break;
+
+    case 'q2':
+      S.answers.q2 = v;
+      await showFeedback('q2_' + v);
+      S.step = 'q3'; showStep(); break;
+
+    case 'q3':
+      S.answers.q3 = v;
+      await showFeedback('q3_' + v);
+      S.step = 'q4'; showStep(); break;
+
+    case 'q4':
+      if (v === 'ff_miete') {
+        // Re-render chips without freifeld chip selected, add input below
+        setIA(chipsHTML([
+          {v:'0',l:'Mietfrei'},{v:'800',l:'Bis 800 €'},
+          {v:'1000',l:'900 – 1.100 €'},{v:'1200',l:'Über 1.100 €'},
+          {v:'ff_miete',l:'Eigene Eingabe'},
+        ]) + '<div id="ff-holder"></div>');
+        // Override chips click to show form
+        document.querySelectorAll('.chip').forEach(c => {
+          if (c.textContent === 'Eigene Eingabe') { c.disabled = true; c.style.borderColor='var(--gold)'; c.style.background='#FDFAF0'; }
+        });
+        appendFreifeld('ff-holder','z.B. 950','€/Monat','doMieteFF');
+        return;
+      }
+      S.answers.q4 = v;
+      await showFeedback('q4_' + v);
+      S.step = 'q5'; showStep(); break;
+
+    case 'q5':
+      S.answers.q5 = v;
+      if (v === 'such') { await doDisqual('arbeit'); }
+      else if (v === 'selbst') { await showFeedback('q5_selbst'); S.step = 'q5a'; showStep(); }
+      else { await showFeedback('q5_' + v); S.step = 'q6'; showStep(); }
+      break;
+
+    case 'q5a':
+      S.answers.q5b = v;
+      if (v === '1' || v === '0') S.warnings.push('abschluesse_wenig');
+      await showFeedback('q5a_' + v);
+      S.step = 'q5b'; showStep(); break;
+
+    case 'q5b':
+      S.answers.q5c = v;
+      if (v === 'u60' || v === '61_99') S.warnings.push('gewinn_niedrig');
+      S.step = 'q6'; showStep(); break;
+
+    case 'q6':
+      if (v === 'ff_kredit') {
+        setIA(chipsHTML([
+          {v:'0',l:'Keine laufenden Raten'},{v:'200',l:'Bis 200 €/Mon.'},
+          {v:'325',l:'200 – 400 €/Mon.'},{v:'500',l:'400 – 600 €/Mon.'},
+          {v:'700',l:'Über 600 €/Mon.'},{v:'ff_kredit',l:'Eigene Eingabe'},
+        ]) + '<div id="ff-holder"></div>');
+        document.querySelectorAll('.chip').forEach(c => {
+          if (c.textContent === 'Eigene Eingabe') { c.disabled = true; c.style.borderColor='var(--gold)'; }
+        });
+        appendFreifeld('ff-holder','z.B. 350','€/Monat','doKreditFF');
+        return;
+      }
+      S.answers.q6 = v;
+      await reaktionKredit(v);
+      S.step = 'q7'; showStep(); break;
+
+    case 'q7':
+      if (v === 'ff_netto') {
+        calcMin();
+        const M = S.minNetto;
+        setIA(chipsHTML([
+          {v:'under',l:`Unter ${fmtEur(M)} €`},
+          {v:'t1',l:`${fmtEur(M)} bis ${fmtEur(M+500)} €`},
+          {v:'t2',l:`${fmtEur(M+500)} bis ${fmtEur(M+1500)} €`},
+          {v:'t3',l:`Über ${fmtEur(M+1500)} €`},
+          {v:'ff_netto',l:'Eigene Eingabe'},
+        ], true) + '<div id="ff-holder"></div>');
+        document.querySelectorAll('.chip').forEach(c => {
+          if (c.textContent === 'Eigene Eingabe') { c.disabled = true; c.style.borderColor='var(--gold)'; }
+        });
+        appendFreifeld('ff-holder','z.B. 3200','€ netto/Mon.','doNettoFF');
+        return;
+      }
+      S.answers.q7 = v;
+      if (v === 'under') { await doDisqual('einkommen'); return; }
+      if (v === 't1') S.warnings.push('einkommen_knapp');
+      setFinRange(v);
+      S.step = 'q8'; showStep(); break;
+
+    case 'q8':
+      S.answers.q8 = v;
+      if (v === 'schlecht') { await doDisqual('schufa'); return; }
+      if (v === 'mittel') S.warnings.push('zahlung_mittel');
+      await showFeedback('q8_' + v);
+      S.step = 'q9'; showStep(); break;
+
+    case 'q9':
+      S.answers.q9 = v;
+      if (v === 'u10') S.warnings.push('eigenkapital_wenig');
+      await showFeedback('q9_' + v);
+      // Kalkulations-Animation vor Gate
+      await showCalcAnimation();
+      S.step = 'gate'; showStep(); break;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// KREDIT REAKTION
+// ─────────────────────────────────────────────────────────────
+async function reaktionKredit(v) {
+  let msg = null;
+  if (v === '0') msg = `✨ Sehr gut, ${S.name} – keine laufenden Raten vereinfacht die Kalkulation erheblich.`;
+  else if (v === '200') msg = `👍 Das ist ein überschaubarer Betrag, den wir problemlos einplanen können.`;
+  if (msg) { await showTyping(1800); addJonas(msg); await delay(300); }
+}
+
+// ─────────────────────────────────────────────────────────────
+// FREUNDLICHE FEEDBACK-REAKTIONEN (nach Antworten)
+// ─────────────────────────────────────────────────────────────
+const FEEDBACK = {
+  motiv_vermogensaufbau:    `💡 Eine sehr kluge Herangehensweise – Immobilien sind langfristig eine der stabilsten Anlageformen.`,
+  motiv_vermogenssicherung: `🛡️ Sehr vorausschauend gedacht – Immobilien gelten als eine der sichersten Anlageformen in Deutschland.`,
+  motiv_steuern:            `💸 Interessant – Kapitalanlageimmobilien bieten in Deutschland erhebliche steuerliche Vorteile.`,
+  motiv_passiv:             `💤 Das ist ein sehr verbreitetes Ziel – passives Einkommen durch Mieteinnahmen ist realistisch erreichbar.`,
+  motiv_unsicher:           `🙌 Kein Problem – genau dafür bin ich hier. Wir klären das gemeinsam.`,
+  q1_eu:                    `🇩🇪 Perfekt – das ist die beste Ausgangslage für eine Bankfinanzierung.`,
+  q1_unbefristet:           `✅ Gut, ein unbefristeter Aufenthaltstitel ist für die meisten Banken vollständig akzeptiert.`,
+  q2_verheiratet:           `💑 Das ist positiv – gemeinsames Einkommen stärkt Ihren Finanzierungsrahmen deutlich.`,
+  q2_ledig:                 `👍 Alles klar – Singles finanzieren täglich erfolgreich Kapitalanlagen.`,
+  q3_0:                     `😊 Verstanden – das macht die Haushaltsrechnung etwas einfacher.`,
+  q4_0:                     `🏠 Toll! Mietfrei zu wohnen verbessert Ihre Bonität bei der Bank spürbar.`,
+  q5_angestellt:            `🎉 Ausgezeichnet – ein unbefristetes Angestelltenverhältnis ist die ideale Voraussetzung für Banken.`,
+  q5_beamter:               `🏛️ Hervorragend – Beamte gehören zur absoluten Top-Gruppe bei der Kreditvergabe.`,
+  q5_selbst:                `💼 Gut, das ist kein Hindernis – mit den richtigen Unterlagen läuft das reibungslos.`,
+  q5a_3plus:                `📊 Drei Jahresabschlüsse – das ist sehr solide. Banken lieben Kontinuität.`,
+  q5a_2:                    `📋 Zwei Jahresabschlüsse – das ist die Mindestvoraussetzung, die die meisten Banken akzeptieren.`,
+  q6_0:                     `✨ Sehr gut, ${S.name} – keine laufenden Raten vereinfacht die Kalkulation erheblich.`,
+  q6_200:                   `👍 Das ist ein überschaubarer Betrag, den wir problemlos einplanen können.`,
+  q8_gut:                   `🌟 Hervorragend! Eine einwandfreie Zahlungshistorie ist Gold wert bei der Kreditvergabe.`,
+  q8_mittel:                `👌 Das ist kein Ausschlusskriterium – entscheidend ist das Gesamtbild, und das sieht bisher gut aus.`,
+  q9_u25plus:               `🏆 Ausgezeichnet! Eigenkapital gibt Ihnen echten Verhandlungsspielraum bei den Konditionen.`,
+  q9_u20:                   `💰 Gut – das ist eine solide Basis, mit der wir arbeiten können.`,
+  q9_u15:                   `👍 Das hilft bereits spürbar bei den Konditionen.`,
+};
+
+async function showFeedback(key) {
+  const msg = FEEDBACK[key];
+  if (!msg) return;
+  await showTyping(2000);
+  addJonas(msg);
+  await delay(300);
+}
+
+// ─────────────────────────────────────────────────────────────
+// KALKULATIONS-ANIMATION (6-7 Sekunden)
+// ─────────────────────────────────────────────────────────────
+async function showCalcAnimation() {
+  await showTyping(2500);
+  addJonas(`⚙️ Einen Moment, ${S.name} – ich gleiche Ihre Angaben jetzt mit unseren 47 Bankpartnern ab und berechne Ihr persönliches Finanzierungspotenzial...`);
+  await delay(400);
+
+  const div = document.createElement('div');
+  div.style.cssText = 'margin-bottom:16px;opacity:0;animation:fadeIn .4s ease forwards';
+  div.innerHTML = `
+    <div class="calc-box">
+      <div class="calc-title">🔄 Bankkriterien werden geprüft...</div>
+      <div class="calc-steps">
+        <div class="calc-step" id="cs1" style="opacity:.3">⬜ Einkommensprüfung</div>
+        <div class="calc-step" id="cs2" style="opacity:.3">⬜ Haushaltsrechnung</div>
+        <div class="calc-step" id="cs3" style="opacity:.3">⬜ Bonitätscheck</div>
+        <div class="calc-step" id="cs4" style="opacity:.3">⬜ Bankpartnerdatenbank abfragen</div>
+        <div class="calc-step" id="cs5" style="opacity:.3">⬜ Finanzierungspotenzial berechnen</div>
+      </div>
+      <div class="calc-bar-wrap" style="margin-top:14px">
+        <div class="calc-bar" id="cbar"></div>
+      </div>
+    </div>`;
+  $('msgs').appendChild(div);
+  scrollDown(); postHeight();
+
+  await delay(200);
+  $('cs1').style.opacity='1'; $('cs1').innerHTML='⏳ Einkommensprüfung läuft...'; $('cbar').style.width='5%';
+  await delay(1100);
+  $('cs1').innerHTML='✅ Einkommensprüfung – bestanden'; $('cbar').style.width='20%';
+  $('cs2').style.opacity='1'; $('cs2').innerHTML='⏳ Haushaltsrechnung läuft...';
+  await delay(1100);
+  $('cs2').innerHTML='✅ Haushaltsrechnung – positiv'; $('cbar').style.width='40%';
+  $('cs3').style.opacity='1'; $('cs3').innerHTML='⏳ Bonitätscheck läuft...';
+  await delay(1200);
+  $('cs3').innerHTML='✅ Bonitätscheck – keine Einträge'; $('cbar').style.width='58%';
+  $('cs4').style.opacity='1'; $('cs4').innerHTML='⏳ 47 Bankpartner werden abgefragt...';
+  await delay(1400);
+  $('cs4').innerHTML='✅ 47 Bankpartner abgeglichen'; $('cbar').style.width='80%';
+  $('cs5').style.opacity='1'; $('cs5').innerHTML='⏳ Finanzierungspotenzial wird berechnet...';
+  await delay(1300);
+  $('cs5').innerHTML='✅ Finanzierungspotenzial – berechnet!';
+  $('cbar').style.width='100%'; $('cbar').style.background='var(--success)';
+  await delay(900);
+  div.style.transition='opacity .4s'; div.style.opacity='0';
+  await delay(400);
+  div.remove();
+}
+
+// ─────────────────────────────────────────────────────────────
+// ZERTIFIKAT LADEANIMATION (3-4 Sekunden)
+// ─────────────────────────────────────────────────────────────
+async function showCertLoading() {
+  const div = document.createElement('div');
+  div.style.cssText = 'margin-bottom:16px;opacity:0;animation:fadeIn .4s ease forwards';
+  div.innerHTML = `
+    <div class="calc-box" style="text-align:center">
+      <div style="font-size:15px;font-weight:600;color:var(--charcoal);margin-bottom:16px">📜 Ihr persönliches Zertifikat wird erstellt...</div>
+      <div class="cert-spinner" style="margin-bottom:16px"></div>
+      <div class="calc-bar-wrap">
+        <div class="calc-bar" id="cbar2" style="transition:width .9s ease"></div>
+      </div>
+      <p style="font-size:13px;color:var(--slate);margin-top:10px" id="clmsg">Daten werden verarbeitet…</p>
+    </div>`;
+  $('msgs').appendChild(div);
+  scrollDown(); postHeight();
+  await delay(100); $('cbar2').style.width='15%';
+  await delay(1200); $('clmsg').textContent='Bonitätsdaten werden geprüft…'; $('cbar2').style.width='35%';
+  await delay(1400); $('clmsg').textContent='Finanzierungsdaten werden eingetragen…'; $('cbar2').style.width='55%';
+  await delay(1200); $('clmsg').textContent='Bankpartner-Abgleich läuft…'; $('cbar2').style.width='72%';
+  await delay(1000); $('clmsg').textContent='Zertifikat wird finalisiert…'; $('cbar2').style.width='88%';
+  await delay(1200); $('cbar2').style.width='100%'; $('cbar2').style.background='var(--success)';
+  $('clmsg').textContent='✅ Fertig!';
+  await delay(900);
+  div.style.transition='opacity .3s'; div.style.opacity='0';
+  await delay(300);
+  div.remove();
+}
+
+// ─────────────────────────────────────────────────────────────
+// FREIFELD HANDLERS (global)
+// ─────────────────────────────────────────────────────────────
+async function doMieteFF() {
+  const v = ffVal(); if (v === null) return;
+  S.answers.q4 = String(v);
+  addUser(`${fmtEur(v)} €/Monat`);
+  clearIA();
+  S.step = 'q5'; showStep();
+}
+
+async function doKreditFF() {
+  const v = ffVal(); if (v === null) return;
+  S.answers.q6 = String(v);
+  addUser(`${fmtEur(v)} €/Monat`);
+  clearIA();
+  await reaktionKredit(v <= 0 ? '0' : (v <= 200 ? '200' : null));
+  S.step = 'q7'; showStep();
+}
+
+async function doNettoFF() {
+  const v = ffVal(); if (v === null) return;
+  calcMin();
+  const M = S.minNetto;
+  let tier;
+  if (v < M) tier = 'under';
+  else if (v < M+500) tier = 't1';
+  else if (v < M+1500) tier = 't2';
+  else tier = 't3';
+  S.answers.q7 = tier;
+  addUser(`${fmtEur(v)} € netto/Mon.`);
+  clearIA();
+  if (tier === 'under') { await doDisqual('einkommen'); return; }
+  if (tier === 't1') S.warnings.push('einkommen_knapp');
+  setFinRange(tier);
+  S.step = 'q8'; showStep();
+}
+
+// ─────────────────────────────────────────────────────────────
+// DISQUALIFIED
+// ─────────────────────────────────────────────────────────────
+const DQ_MSG = {
+  arbeit:     'Aktuell ist eine Bankfinanzierung bei Arbeitslosigkeit oder ALG-Bezug nicht möglich.',
+  schufa:     'Schwerwiegende Zahlungsprobleme in der Vergangenheit verhindern aktuell eine Finanzierung.',
+  aufenthalt: 'Ein dauerhaft befristeter Aufenthaltstitel ohne Entfristungsplanung ist aktuell kein akzeptiertes Kriterium bei Banken.',
+  einkommen:  'Das angegebene Einkommen liegt unterhalb des von Banken geforderten Mindesteinkommens.',
+};
+
+async function doDisqual(reason) {
+  setProgress(100);
+  S.disqual = reason;
+  S.qualified = false;
+  clearIA();
+  const msg = `💬 ${S.name}, auf Basis Ihrer Angaben gibt es aktuell einen Punkt, der eine Bankfinanzierung noch verhindert. Das ist keine endgültige Aussage – viele Situationen lassen sich mit der richtigen Beratung lösen.`;
+  await showTyping(3800);
+  addJonas(msg);
+  await delay(400);
+  const div = document.createElement('div');
+  div.className = 'result-wrap';
+  div.innerHTML = `
+    <div class="dq-blk">
+      <div class="dq-ttl">Hinweis zur aktuellen Situation</div>
+      <div class="dq-txt">${DQ_MSG[reason] || ''}</div>
+    </div>
+    <div class="cta-blk">
+      <div class="cta-blk-h">Trotzdem persönliche Beratung gewünscht?</div>
+      <div class="cta-blk-p">In einem kostenlosen Gespräch können wir gemeinsam prüfen, ob und wann eine Finanzierung für Sie möglich wird.</div>
+      <a href="${CALENDLY_URL}" target="_blank" class="cta-blk-btn">Trotzdem kostenloses Erstgespräch buchen →</a>
+      <button class="restart-btn" onclick="doRestart()">Neu starten</button>
+    </div>`;
+  $('msgs').appendChild(div);
+  scrollDown(); postHeight();
+  fireWebhooks();
+}
+
+// ─────────────────────────────────────────────────────────────
+// GAUGE RENDER (SVG half-circle)
+// ─────────────────────────────────────────────────────────────
+function buildGaugeSVG(pct) {
+  const total = Math.PI * 80; // arc length for r=80 half circle
+  const fill = total * pct;
+  const angle = (-90 + pct * 180) * Math.PI / 180;
+  const ex = (100 + 80 * Math.cos(angle)).toFixed(1);
+  const ey = (100 + 80 * Math.sin(angle)).toFixed(1);
+  const nAngle = -90 + pct * 180;
+  return `<svg class="gauge-svg" viewBox="0 0 200 120" style="overflow:visible">
+    <defs>
+      <style>
+        #ga{stroke-dasharray:${total.toFixed(1)};stroke-dashoffset:${total.toFixed(1)};animation:ga .9s ease .4s forwards}
+        @keyframes ga{to{stroke-dashoffset:${(total-fill).toFixed(1)}}}
+        #gn{transform-origin:100px 100px;transform:rotate(-90deg);animation:gn .9s ease .4s forwards}
+        @keyframes gn{to{transform:rotate(${nAngle}deg)}}
+      </style>
+    </defs>
+    <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2DDD4" stroke-width="14" stroke-linecap="round"/>
+    <path id="ga" d="M 20 100 A 80 80 0 0 1 ${ex} ${ey}" fill="none" stroke="var(--gold)" stroke-width="14" stroke-linecap="round"/>
+    <line id="gn" x1="100" y1="100" x2="100" y2="22" stroke="var(--charcoal)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="100" cy="100" r="6" fill="var(--charcoal)"/>
+    <text x="16" y="118" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif">0%</text>
+    <text x="168" y="118" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif">100%</text>
+  </svg>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// GATE
+// ─────────────────────────────────────────────────────────────
+function renderGate() {
+  const div = document.createElement('div');
+  div.className = 'gate-box';
+  div.innerHTML = `
+    <!-- HORIZONTAL BAROMETER -->
+    <div class="hbar-wrap">
+      <div class="hbar-lock">🔒</div>
+      <div class="hbar-track">
+        <div class="hbar-needle" id="hneedle"></div>
+      </div>
+      <div class="hbar-zone-labels">
+        <span>Gering</span>
+        <span>Mittel</span>
+        <span>Hoch</span>
+      </div>
+      <p class="hbar-sub">Ihr Finanzierungspotenzial wurde berechnet.<br><strong style="color:var(--charcoal)">Kontaktdaten eingeben, um das Ergebnis zu sehen.</strong></p>
+    </div>
+    <!-- BLURRED PREVIEW -->
+    <div class="cert-prev-wrap">
+      <div class="cert-blur">
+        <div style="font-weight:700;font-size:13px;margin-bottom:8px">Deutsche Kapitalentwicklung GmbH</div>
+        <div style="height:2px;background:var(--gold);margin-bottom:10px"></div>
+        <div style="font-family:'Inter',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px">Finanzierungszertifikat</div>
+        <div style="font-size:13px;color:var(--slate);margin-bottom:14px">Ausgestellt für: ${S.name}</div>
+        <div style="background:var(--gold);border-radius:10px;padding:14px;text-align:center;color:#fff">
+          <div style="font-size:26px;font-weight:700">XXX.XXX € – XXX.XXX €</div>
+          <div style="font-size:12px;opacity:.85;margin-top:4px">Geschätzter Finanzierungsrahmen</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+          <div style="background:var(--bg-subtle);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--slate);text-transform:uppercase">Name</div><div style="font-weight:600">${S.name}</div></div>
+          <div style="background:var(--bg-subtle);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--slate);text-transform:uppercase">Einkommens&shy;stufe</div><div style="font-weight:600">●●●</div></div>
+        </div>
+      </div>
+      <div class="cert-blur-overlay">
+        <span class="pulse-dot"></span>
+        <p style="font-size:13px;color:var(--slate);margin-top:6px">Finanzierungszertifikat wird vorbereitet…</p>
+      </div>
+    </div>
+    <!-- FORM -->
+    <p class="gate-explain">Wir benötigen Ihre Kontaktdaten ausschließlich, um Ihnen Ihr persönliches Finanzierungszertifikat zukommen zu lassen und Sie bei Interesse zu kontaktieren.</p>
+    <div class="gate-form">
+      <div>
+        <label class="f-lbl" for="g-email">E-Mail-Adresse *</label>
+        <div class="f-wrap">
+          <input class="f-inp" id="g-email" type="email" name="email" placeholder="ihre@email.de" autocomplete="email" inputmode="email" oninput="chkEmail(this)">
+          <span class="f-chk" id="ec">✓</span>
+        </div>
+        <span class="f-err" id="ee">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+      </div>
+      <div>
+        <label class="f-lbl" for="g-tel">Handynummer *</label>
+        <div class="f-wrap">
+          <input class="f-inp" id="g-tel" type="tel" name="tel" placeholder="+49 170 1234567" autocomplete="tel" inputmode="tel" oninput="chkTel(this)">
+          <span class="f-chk" id="tc">✓</span>
+        </div>
+        <span class="f-err" id="te">Bitte geben Sie eine gültige deutsche Handynummer ein.</span>
+      </div>
+      <div class="cb-row">
+        <input type="checkbox" id="g-dsgvo">
+        <label class="cb-lbl" for="g-dsgvo">Ich stimme zu, dass die Deutsche Kapitalentwicklung GmbH meine Daten zur Kontaktaufnahme verwenden darf.</label>
+      </div>
+      <button class="gate-submit" onclick="doGateSubmit()">Finanzierungszertifikat jetzt abrufen →</button>
+    </div>`;
+  $('msgs').appendChild(div);
+  scrollDown(); postHeight();
+}
+
+function chkEmail(el) {
+  const v = el.value.trim();
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  el.classList.toggle('ok', ok);
+  $('ec').classList.toggle('on', ok);
+  $('ee').classList.toggle('on', v.length > 2 && !ok);
+  return ok;
+}
+
+function chkTel(el) {
+  const v = el.value.trim().replace(/[\s\-\(\)\.]/g,'');
+  const ok = /^(\+49|0049|0)[1-9][0-9]{8,12}$/.test(v) && v.replace(/\D/g,'').length >= 10;
+  el.classList.toggle('ok', ok);
+  $('tc').classList.toggle('on', ok);
+  $('te').classList.toggle('on', el.value.length > 3 && !ok);
+  return ok;
+}
+
+async function doGateSubmit() {
+  const eEl = $('g-email'), tEl = $('g-tel'), cb = $('g-dsgvo');
+  const eOk = chkEmail(eEl), tOk = chkTel(tEl);
+  if (!eOk) { $('ee').classList.add('on'); eEl.focus(); return; }
+  if (!tOk) { $('te').classList.add('on'); tEl.focus(); return; }
+  if (!cb.checked) { cb.style.outline = '2px solid var(--error)'; cb.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  S.email = eEl.value.trim();
+  S.tel   = tEl.value.trim();
+  S.qualified = true;
+  // Freeze form
+  const form = document.querySelector('.gate-form');
+  if (form) { form.style.pointerEvents='none'; form.style.opacity='.55'; }
+  setProgress(100);
+  fireWebhooks();
+  // Zertifikat-Ladeanimation
+  await showCertLoading();
+  renderCert();
+}
+
+// ─────────────────────────────────────────────────────────────
+// CERTIFICATE
+// ─────────────────────────────────────────────────────────────
+const WARN_TXT = {
+  aufenthalt_befristet: 'Befristeter Aufenthaltstitel – Klärung mit Bankpartner empfohlen.',
+  abschluesse_wenig:    'Wenige Jahresabschlüsse vorhanden – zusätzliche Unterlagen erforderlich.',
+  gewinn_niedrig:       'Jahresgewinn im unteren Bereich – Finanzierungsspielraum ggf. eingeschränkt.',
+  einkommen_knapp:      'Einkommen liegt knapp über dem Mindest-Niveau der Bank.',
+  zahlung_mittel:       'Gelegentliche Zahlungsverzögerungen – wird im Rahmen der Bonitätsprüfung berücksichtigt.',
+  eigenkapital_wenig:   'Geringes Eigenkapital – Vollfinanzierung über DKE-Partner möglich.',
+};
+
+const STUFE_LBL = { t1:'Ausreichend', t2:'Gut', t3:'Sehr gut' };
+
+function renderCert() {
+  const now = new Date();
+  const valid = new Date(now.getTime() + 14*864e5);
+  const fmtD = d => d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const vg = `DKE-${now.getFullYear()}-${String(Math.floor(10000+Math.random()*90000))}`;
+  const warns = S.warnings.map(k => WARN_TXT[k]).filter(Boolean);
+  const warnsHTML = warns.length
+    ? `<div class="cert-warn"><div class="cert-warn-ttl">Hinweise zur Vorprüfung</div><ul>${warns.map(w=>`<li>${w}</li>`).join('')}</ul></div>`
+    : '';
+  const zahlung = S.answers.q8 === 'gut' ? 'Einwandfrei' : 'Mit Anmerkungen';
+
+  const div = document.createElement('div');
+  div.innerHTML = `
+  <div class="cert-card">
+
+    <!-- LETTERHEAD -->
+    <div class="cert-letterhead">
+      <div>
+        <div class="cert-lh-name">Deutsche Kapitalentwicklung GmbH</div>
+        <div class="cert-lh-sub">Kapitalanlage-Immobilien · Finanzierung · Vermögensaufbau</div>
+      </div>
+      <div class="cert-lh-badge">Offiziell</div>
+    </div>
+    <div class="cert-gold-bar"></div>
+
+    <!-- SUBJECT BAND -->
+    <div class="cert-subject-band">
+      <div class="cert-subject-ttl">Finanzierungszertifikat</div>
+      <div class="cert-vg-pill">Nr. ${vg}</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="cert-body">
+
+      <!-- META ROW -->
+      <div class="cert-meta-row">
+        <div class="cert-meta-item">📅 <strong>Ausgestellt:</strong> ${fmtD(now)}</div>
+        <div class="cert-meta-item">⏳ <strong>Gültig bis:</strong> ${fmtD(valid)}</div>
+        <div class="cert-meta-item">📍 <strong>Ort:</strong> München</div>
+      </div>
+
+      <!-- SALUTATION & TEXT -->
+      <div class="cert-salut">Sehr geehrte/r ${S.name},</div>
+      <p class="cert-txt">
+        nach erfolgreicher digitaler Vorprüfung Ihrer Finanzdaten durch unsere Berechnungsplattform
+        bestätigen wir hiermit, dass Sie grundsätzlich die Finanzierungsvoraussetzungen für den
+        Erwerb einer Kapitalanlage-Immobilie erfüllen. Dieser Befund basiert auf den von Ihnen
+        gemachten Angaben und dem Abgleich mit den aktuellen Kreditrichtlinien unserer
+        <strong>47 geprüften Bankpartner</strong>.
+      </p>
+
+      <!-- RANGE BOX -->
+      <div class="cert-range">
+        <div class="cert-amt">${fmtEur(S.finFrom)} € – ${fmtEur(S.finTo)} €</div>
+        <div class="cert-amt-lbl">Geschätzter Finanzierungsrahmen · Kapitalanlage-Immobilien</div>
+      </div>
+
+      <!-- DATA GRID -->
+      <div class="cert-grid">
+        <div class="cg-item"><div class="cg-lbl">Name</div><div class="cg-val">${S.name}</div></div>
+        <div class="cg-item"><div class="cg-lbl">Einkommensstufe</div><div class="cg-val">${STUFE_LBL[S.stufe]||''}</div></div>
+        <div class="cg-item"><div class="cg-lbl">Zahlungshistorie</div><div class="cg-val">${zahlung}</div></div>
+        <div class="cg-item"><div class="cg-lbl">Geprüfte Region</div><div class="cg-val">Deutschland</div></div>
+      </div>
+
+      ${warnsHTML}
+
+      <!-- SIGNATURE BLOCK -->
+      <div class="cert-sig-block">
+        <div class="cert-sig-left">
+          <div class="cert-sig-place">München, ${fmtD(now)}</div>
+          <div class="cert-sig-script">Jonas Reichert</div>
+          <div class="cert-sig-line"></div>
+          <div class="cert-sig-name">Jonas Reichert</div>
+          <div class="cert-sig-title">Digitaler Finanzierungsberater · Deutsche Kapitalentwicklung GmbH</div>
+        </div>
+        <div class="cert-stamp">
+          <div class="cert-stamp-inner">
+            <div class="cert-stamp-main">DKE<br>Geprüft</div>
+            <div class="cert-stamp-year">${now.getFullYear()}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISCLAIMER & VALID BADGE -->
+      <div class="cert-disc">
+        Dieses Zertifikat ist keine verbindliche Kreditzusage. Die finale Finanzierungszusage
+        erfolgt nach vollständiger Bonitätsprüfung durch den jeweiligen Bankpartner. Alle Angaben
+        basieren auf den Selbstauskünften des Antragstellers.
+      </div>
+      <span class="cert-valid">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Gültig bis ${fmtD(valid)}
+      </span>
+
+      <!-- CTA -->
+      <div class="cta-blk">
+        <div class="cta-blk-h">Ihr nächster Schritt zur Kapitalanlage</div>
+        <div class="cta-blk-p">Lassen Sie uns in einem kostenlosen Erstgespräch prüfen, welche Immobilien zu Ihrem Finanzierungsprofil passen.</div>
+        <a href="${CALENDLY_URL}" target="_blank" class="cta-blk-btn">Kostenloses Erstgespräch buchen →</a>
+        <button class="restart-btn" onclick="doRestart()">Neu starten</button>
+      </div>
+    </div>
+  </div>`;
+  $('msgs').appendChild(div);
+  scrollDown(); postHeight();
+}
+
+// ─────────────────────────────────────────────────────────────
+// WEBHOOKS
+// ─────────────────────────────────────────────────────────────
+function fireWebhooks() {
+  const now = new Date();
+  const id = `lead_${now.getTime()}`;
+  const spanne = S.qualified ? `${Math.round(S.finFrom/1000)}k – ${Math.round(S.finTo/1000)}k €` : null;
+
+  const lead = {
+    id, name:S.name, email:S.email, telefon:S.tel,
+    timestamp: now.toLocaleString('de-DE'), timestamp_iso: now.toISOString(),
+    qualifiziert: S.qualified, disqual_reason: S.disqual,
+    finanzierung_von: S.finFrom, finanzierung_bis: S.finTo,
+    einkommensstufe: S.stufe, investitionsmotiv: S.answers.motiv||'',
+    warnungen: S.warnings, antworten: {...S.answers}
+  };
+
+  const closeP = {
+    lead_name: S.name,
+    contacts: [{ name:S.name,
+      emails:[{email:S.email,type:'office'}],
+      phones:[{phone:S.tel,type:'mobile'}] }],
+    custom: {
+      dke_status:          S.qualified ? 'Neuer Lead' : `Kein Potenzial – ${S.disqual}`,
+      dke_pipeline:        S.qualified ? 'NEUE LEADS' : `KEIN POTENZIAL – ${(S.disqual||'').toUpperCase()}`,
+      dke_motiv:           S.answers.motiv||'',
+      dke_fin_spanne:      spanne||'',
+      dke_fin_von:         S.finFrom,
+      dke_fin_bis:         S.finTo,
+      dke_einkommensstufe: S.stufe,
+      dke_warnungen:       S.warnings.join(', '),
+      dke_antworten_json:  JSON.stringify(S.answers)
+    }
+  };
+
+  const send = (url, body) => {
+    if (!url || url.includes('_HIER')) return;
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{});
+  };
+  send(CLOSE_WEBHOOK, closeP);
+  send(MAKE_WEBHOOK,  lead);
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESTART
+// ─────────────────────────────────────────────────────────────
+function doRestart() {
+  Object.assign(S,{
+    step:'intro',name:'',email:'',tel:'',answers:{},warnings:[],
+    disqual:null,qualified:false,minNetto:0,finFrom:0,finTo:0,stufe:''
+  });
+  $('msgs').innerHTML='';
+  $('progress-bar').style.width='0%';
+  clearIA();
+  init();
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+async function init() {
+  await delay(400);
+  await showTyping(1200);
+  addJonas('👋 Guten Tag! Ich bin Jonas Reichert, 42 Jahre alt und digitaler Finanzierungsberater der Deutschen Kapitalentwicklung GmbH. Schön, dass Sie sich die Zeit nehmen.');
+
+  await delay(500);
+  await showTyping(3800);
+  addJonas('🏠 In den nächsten 2–3 Minuten prüfe ich gemeinsam mit Ihnen, ob Sie grundsätzlich für die Finanzierung einer Kapitalanlage-Immobilie in Frage kommen – vollständig kostenlos und unverbindlich.<br><br>🔒 Wichtig: Es wird keine SCHUFA-Anfrage gestellt und kein Eintrag erzeugt. Ich prüfe ausschließlich die Kriterien, die deutsche Banken aktuell an Kapitalanleger stellen.');
+
+  await delay(600);
+  setIA(`<button class="intro-cta" onclick="startChat()">Jetzt Finanzierbarkeit prüfen →</button>`);
+  postHeight();
+}
+
+async function startChat() {
+  clearIA();
+  addUser('Jetzt Finanzierbarkeit prüfen →');
+  await showTyping(2200);
+  addJonas('✍️ Bevor wir beginnen – wie darf ich Sie ansprechen?');
+  await delay(200);
+  S.step = 'name';
+  showNameInput();
+}
+
+// ─────────────────────────────────────────────────────────────
+// HEIGHT SYNC
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => { adjustBottomPad(); postHeight(); });
+setInterval(() => { adjustBottomPad(); postHeight(); }, 2000);
+
+// Start
+init();
+</script>
+</body>
+</html>
