@@ -14,10 +14,11 @@
   --border:#E2DDD4;--shadow:rgba(0,0,0,0.07);
 }
 html{font-size:16px}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;font-weight:300;background:var(--bg);color:var(--charcoal);min-height:100vh;overflow-x:hidden}
  
 /* PROGRESS */
-#progress-bar{position:fixed;top:0;left:0;height:4px;background:var(--gold);transition:width .7s ease;z-index:200;width:0%}
+#progress-wrap{position:fixed;top:0;left:0;right:0;height:4px;background:rgba(212,175,55,.2);z-index:9999;pointer-events:none}
+#progress-bar{height:4px;background:var(--gold);transition:width .7s ease;width:0%;pointer-events:none}
  
 /* CHAT CONTAINER */
 #chat-wrap{max-width:680px;margin:0 auto;padding:20px 16px 200px;transition:padding-bottom .3s ease}
@@ -141,6 +142,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 .cert-sig-left{}
 .cert-sig-place{font-size:12px;color:var(--slate);margin-bottom:14px}
 .cert-sig-script{font-family:'Dancing Script',cursive;font-size:38px;font-weight:700;color:var(--charcoal);line-height:1;margin-bottom:4px;letter-spacing:.5px}
+.cert-sig-img{max-width:200px;height:60px;object-fit:contain;display:block;margin-bottom:2px}
 .cert-sig-line{height:1px;background:var(--charcoal);margin-bottom:6px;width:180px}
 .cert-sig-name{font-size:12px;font-weight:700;color:var(--charcoal)}
 .cert-sig-title{font-size:11px;color:var(--slate)}
@@ -244,7 +246,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 </head>
 <body>
  
-<div id="progress-bar"></div>
+<div id="progress-wrap"><div id="progress-bar"></div></div>
 <div id="chat-wrap">
   <div id="msgs"></div>
   <div id="anchor"></div>
@@ -257,11 +259,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--charcoal);m
 // ─────────────────────────────────────────────────────────────
 const CLOSE_WEBHOOK = 'CLOSE_WEBHOOK_URL_HIER';
 const MAKE_WEBHOOK  = 'MAKE_WEBHOOK_URL_HIER';
-const CALENDLY_URL  = 'CALENDLY_URL_HIER';
+const CALENDLY_URL  = 'https://calendly.com/sabrina-deutsche-kapitalentwicklung/new-meeting?month=2026-04';
  
-// ── JONAS PROFILBILD ── Fügen Sie hier den Base64-String des Fotos ein (data:image/jpeg;base64,...)
-// Beispiel: const JONAS_PHOTO = 'data:image/jpeg;base64,/9j/4AAQ...';
-const JONAS_PHOTO = 'data:image/jpeg;base64,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';
+const JONAS_SIG   = 'data:image/png;base64,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';
+const JONAS_PHOTO = 'data:image/jpeg;base64,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';
  
 function avHTML() {
   if (JONAS_PHOTO) {
@@ -358,7 +359,18 @@ function addJonas(html, info) {
   const infoHTML = info ? `<div class="inf">${info}</div>` : '';
   row.innerHTML = `${avHTML()}<div class="bbl j">${html}${infoHTML}</div>`;
   $('msgs').appendChild(row);
-  scrollDown(); postHeight();
+  postHeight();
+  // Smart scroll: keep message above IA bar with comfortable gap
+  requestAnimationFrame(() => {
+    const ia = $('ia');
+    const iaH = ia ? ia.offsetHeight : 0;
+    const rect = row.getBoundingClientRect();
+    const viewH = window.innerHeight;
+    const GAP = 56;
+    const desiredBottom = viewH - iaH - GAP;
+    const scrollTop = window.scrollY + rect.bottom - desiredBottom;
+    window.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
+  });
 }
  
 function addUser(txt) {
@@ -411,7 +423,8 @@ function setIA(html) {
   $('ia-inner').innerHTML = html;
   postHeight();
   // Small delay so IA bar has rendered its full height before we measure+scroll
-  setTimeout(() => { adjustBottomPad(); scrollToLastMsg(); }, 100);
+  // Wait 460ms: lets any prior smooth-scroll finish + chip slideUp animation complete
+  setTimeout(() => { adjustBottomPad(); scrollToLastMsg(); }, 460);
 }
 function clearIA() {
   $('ia-inner').innerHTML = '';
@@ -1049,14 +1062,16 @@ async function showCertLoading() {
     </div>`;
   $('msgs').appendChild(div);
   scrollDown(); postHeight();
-  await delay(100); $('cbar2').style.width='15%';
-  await delay(1200); $('clmsg').textContent='Bonitätsdaten werden geprüft…'; $('cbar2').style.width='35%';
-  await delay(1400); $('clmsg').textContent='Finanzierungsdaten werden eingetragen…'; $('cbar2').style.width='55%';
-  await delay(1200); $('clmsg').textContent='Bankpartner-Abgleich läuft…'; $('cbar2').style.width='72%';
-  await delay(1000); $('clmsg').textContent='Zertifikat wird finalisiert…'; $('cbar2').style.width='88%';
+  await delay(100); $('cbar2').style.width='8%';
+  await delay(1400); $('clmsg').textContent='Identitätsdaten werden verifiziert…'; $('cbar2').style.width='22%';
+  await delay(1600); $('clmsg').textContent='Bonitätsdaten werden geprüft…'; $('cbar2').style.width='38%';
+  await delay(1800); $('clmsg').textContent='Haushaltsrechnung wird erstellt…'; $('cbar2').style.width='54%';
+  await delay(1600); $('clmsg').textContent='Finanzierungsdaten werden eingetragen…'; $('cbar2').style.width='68%';
+  await delay(1500); $('clmsg').textContent='Bankpartner-Abgleich läuft…'; $('cbar2').style.width='82%';
+  await delay(1400); $('clmsg').textContent='Zertifikat wird finalisiert…'; $('cbar2').style.width='93%';
   await delay(1200); $('cbar2').style.width='100%'; $('cbar2').style.background='var(--success)';
   $('clmsg').textContent='✅ Fertig!';
-  await delay(900);
+  await delay(1400);
   div.style.transition='opacity .3s'; div.style.opacity='0';
   await delay(300);
   div.remove();
@@ -1225,10 +1240,12 @@ function renderGate() {
         </div>
         <span class="f-err" id="te">Bitte geben Sie eine gültige deutsche Handynummer ein.</span>
       </div>
-      <div class="cb-row">
-        <input type="checkbox" id="g-dsgvo">
-        <label class="cb-lbl" for="g-dsgvo">Ich stimme zu, dass die Deutsche Kapitalentwicklung GmbH meine Daten zur Kontaktaufnahme verwenden darf.</label>
-      </div>
+      <p style="font-size:12px;color:var(--slate);line-height:1.6;margin-top:4px">
+        Mit dem Absenden bestätigen Sie, dass Sie mit den
+        <strong>Allgemeinen Geschäftsbedingungen</strong> der Deutschen Kapitalentwicklung GmbH
+        einverstanden sind und der Verarbeitung Ihrer personenbezogenen Daten zur
+        Kontaktaufnahme zustimmen.
+      </p>
       <button class="gate-submit" onclick="doGateSubmit()">Finanzierungszertifikat jetzt abrufen →</button>
     </div>`;
   $('msgs').appendChild(div);
@@ -1254,11 +1271,10 @@ function chkTel(el) {
 }
  
 async function doGateSubmit() {
-  const eEl = $('g-email'), tEl = $('g-tel'), cb = $('g-dsgvo');
+  const eEl = $('g-email'), tEl = $('g-tel');
   const eOk = chkEmail(eEl), tOk = chkTel(tEl);
   if (!eOk) { $('ee').classList.add('on'); eEl.focus(); return; }
   if (!tOk) { $('te').classList.add('on'); tEl.focus(); return; }
-  if (!cb.checked) { cb.style.outline = '2px solid var(--error)'; cb.scrollIntoView({behavior:'smooth',block:'center'}); return; }
   S.email = eEl.value.trim();
   S.tel   = tEl.value.trim();
   S.qualified = true;
@@ -1357,7 +1373,7 @@ function renderCert() {
       <div class="cert-sig-block">
         <div class="cert-sig-left">
           <div class="cert-sig-place">München, ${fmtD(now)}</div>
-          <div class="cert-sig-script">Jonas Reichert</div>
+          <img class="cert-sig-img" src="${JONAS_SIG}" alt="Unterschrift Jonas Reichert">
           <div class="cert-sig-line"></div>
           <div class="cert-sig-name">Jonas Reichert</div>
           <div class="cert-sig-title">Digitaler Finanzierungsberater · Deutsche Kapitalentwicklung GmbH</div>
@@ -1391,7 +1407,15 @@ function renderCert() {
     </div>
   </div>`;
   $('msgs').appendChild(div);
-  scrollDown(); postHeight();
+  postHeight();
+  // Scroll so certificate is visible from the TOP, not the bottom
+  setTimeout(() => {
+    const card = div.querySelector('.cert-card');
+    if (card) {
+      const top = card.getBoundingClientRect().top + window.scrollY - 16;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+  }, 200);
 }
  
 // ─────────────────────────────────────────────────────────────
@@ -1400,41 +1424,36 @@ function renderCert() {
 function fireWebhooks() {
   const now = new Date();
   const id = `lead_${now.getTime()}`;
-  const spanne = S.qualified ? `${Math.round(S.finFrom/1000)}k – ${Math.round(S.finTo/1000)}k €` : null;
- 
-  const lead = {
-    id, name:S.name, email:S.email, telefon:S.tel,
-    timestamp: now.toLocaleString('de-DE'), timestamp_iso: now.toISOString(),
-    qualifiziert: S.qualified, disqual_reason: S.disqual,
-    finanzierung_von: S.finFrom, finanzierung_bis: S.finTo,
-    einkommensstufe: S.stufe, investitionsmotiv: S.answers.motiv||'',
-    warnungen: S.warnings, antworten: {...S.answers}
+  const payload = {
+    id,
+    datum: now.toLocaleString('de-DE'),
+    datum_iso: now.toISOString(),
+    name: S.name,
+    email: S.email,
+    telefon: S.tel,
+    qualifiziert: S.qualified ? 'Ja' : 'Nein',
+    disqual_grund: S.disqual || '',
+    warnungen: S.warnings.join(', '),
+    investitionsmotiv: S.answers.motiv || '',
+    aufenthalt: S.answers.q1 || '',
+    entfristung: S.answers.q1a || '',
+    familienstand: S.answers.q2 || '',
+    kinder: S.answers.q3 || '',
+    warmmiete: S.answers.q4 || '',
+    beschaeftigung: S.answers.q5 || '',
+    jahresabschluesse: S.answers.q5b || '',
+    jahresgewinn: S.answers.q5c || '',
+    laufende_raten: S.answers.q6 || '',
+    einkommen_stufe: S.answers.q7 || '',
+    zahlungshistorie: S.answers.q8 || '',
+    eigenkapital: S.answers.q9 || '',
   };
- 
-  const closeP = {
-    lead_name: S.name,
-    contacts: [{ name:S.name,
-      emails:[{email:S.email,type:'office'}],
-      phones:[{phone:S.tel,type:'mobile'}] }],
-    custom: {
-      dke_status:          S.qualified ? 'Neuer Lead' : `Kein Potenzial – ${S.disqual}`,
-      dke_pipeline:        S.qualified ? 'NEUE LEADS' : `KEIN POTENZIAL – ${(S.disqual||'').toUpperCase()}`,
-      dke_motiv:           S.answers.motiv||'',
-      dke_fin_spanne:      spanne||'',
-      dke_fin_von:         S.finFrom,
-      dke_fin_bis:         S.finTo,
-      dke_einkommensstufe: S.stufe,
-      dke_warnungen:       S.warnings.join(', '),
-      dke_antworten_json:  JSON.stringify(S.answers)
-    }
-  };
- 
   const send = (url, body) => {
     if (!url || url.includes('_HIER')) return;
-    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{});
+    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => {});
   };
-  send(CLOSE_WEBHOOK, closeP);
-  send(MAKE_WEBHOOK,  lead);
+  send(MAKE_WEBHOOK, payload);
+  send(CLOSE_WEBHOOK, payload);
 }
  
 // ─────────────────────────────────────────────────────────────
@@ -1457,7 +1476,7 @@ function doRestart() {
 async function init() {
   await delay(400);
   await showTyping(1200);
-  addJonas('👋 Guten Tag! Ich bin Jonas Reichert, 42 Jahre alt und digitaler Finanzierungsberater der Deutschen Kapitalentwicklung GmbH. Schön, dass Sie sich die Zeit nehmen.');
+  addJonas('👋 Guten Tag! Ich bin Jonas Reichert und digitaler Finanzierungsberater der Deutschen Kapitalentwicklung GmbH. Schön, dass Sie sich die Zeit nehmen.');
  
   await delay(500);
   await showTyping(3800);
