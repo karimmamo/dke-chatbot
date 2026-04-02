@@ -1400,7 +1400,44 @@ function renderCert() {
 function fireWebhooks() {
   const now = new Date();
   const id = `lead_${now.getTime()}`;
-  const spanne = S.qualified ? `${Math.round(S.finFrom/1000)}k – ${Math.round(S.finTo/1000)}k €` : null;
+
+  const payload = {
+    id,
+    datum:             now.toLocaleString('de-DE'),
+    datum_iso:         now.toISOString(),
+    name:              S.name,
+    email:             S.email,
+    telefon:           S.tel,
+    qualifiziert:      S.qualified ? 'Ja' : 'Nein',
+    disqual_grund:     S.disqual || '',
+    warnungen:         S.warnings.join(', '),
+    investitionsmotiv: S.answers.motiv  || '',
+    aufenthalt:        S.answers.q1     || '',
+    entfristung:       S.answers.q1a    || '',
+    familienstand:     S.answers.q2     || '',
+    kinder:            S.answers.q3     || '',
+    warmmiete:         S.answers.q4     || '',
+    beschaeftigung:    S.answers.q5     || '',
+    jahresabschluesse: S.answers.q5b    || '',
+    jahresgewinn:      S.answers.q5c    || '',
+    laufende_raten:    S.answers.q6     || '',
+    einkommen_stufe:   S.answers.q7     || '',
+    zahlungshistorie:  S.answers.q8     || '',
+    eigenkapital:      S.answers.q9     || '',
+  };
+
+  const send = (url, body) => {
+    if (!url || url.includes('_HIER')) return;
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).catch(() => {});
+  };
+
+  send(MAKE_WEBHOOK, payload);
+  send(CLOSE_WEBHOOK, payload);
+}
 
   const lead = {
     id, name:S.name, email:S.email, telefon:S.tel,
