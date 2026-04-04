@@ -845,7 +845,7 @@ async function handleAnswer(v, l) {
       break;
  
     case 'q2':
-      S.answers.q2 = l;
+      S.answers.q2 = v;
       await showFeedback('q2_' + v);
       S.step = 'q3'; showStep(); break;
  
@@ -1437,7 +1437,11 @@ function fireWebhooks() {
     investitionsmotiv: S.answers.motiv || '',
     aufenthalt: S.answers.q1 || '',
     entfristung: S.answers.q1a || '',
-    familienstand: S.answers.q2 || '',
+    familienstand: S.answers.q2 === 'verheiratet' ? 'Verheiratet / Lebenspartnerschaft' :
+               S.answers.q2 === 'ledig' ? 'Ledig' :
+               S.answers.q2 === 'getrennt' ? 'Getrennt lebend' :
+               S.answers.q2 === 'geschieden' ? 'Geschieden' :
+               S.answers.q2 === 'verwitwet' ? 'Verwitwet' : '',
     kinder: S.answers.q3 || '',
     warmmiete: S.answers.q4 || '',
     beschaeftigung: S.answers.q5 || '',
