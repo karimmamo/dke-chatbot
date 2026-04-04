@@ -827,30 +827,30 @@ async function handleAnswer(v, l) {
   switch (S.step) {
  
     case 'motiv':
-      S.answers.motiv = v;
+      S.answers.motiv = l;
       await showFeedback('motiv_' + v);
       S.step = 'q1'; showStep(); break;
  
     case 'q1':
-      S.answers.q1 = v;
+      S.answers.q1 = l;
       if (v === 'kein') { await doDisqual('aufenthalt'); }
       else if (v === 'befristet') { S.step = 'q1a'; showStep(); }
       else { await showFeedback('q1_' + v); S.step = 'q2'; showStep(); }
       break;
  
     case 'q1a':
-      S.answers.q1a = v;
+      S.answers.q1a = l;
       if (v === 'bleibt') { await doDisqual('aufenthalt'); }
       else { S.warnings.push('aufenthalt_befristet'); S.step = 'q2'; showStep(); }
       break;
  
     case 'q2':
-      S.answers.q2 = v;
+      S.answers.q2 = l;
       await showFeedback('q2_' + v);
       S.step = 'q3'; showStep(); break;
  
     case 'q3':
-      S.answers.q3 = v;
+      S.answers.q3 = l;
       await showFeedback('q3_' + v);
       S.step = 'q4'; showStep(); break;
  
@@ -874,20 +874,20 @@ async function handleAnswer(v, l) {
       S.step = 'q5'; showStep(); break;
  
     case 'q5':
-      S.answers.q5 = v;
+      S.answers.q5 = l;
       if (v === 'such') { await doDisqual('arbeit'); }
       else if (v === 'selbst') { await showFeedback('q5_selbst'); S.step = 'q5a'; showStep(); }
       else { await showFeedback('q5_' + v); S.step = 'q6'; showStep(); }
       break;
  
     case 'q5a':
-      S.answers.q5b = v;
+      S.answers.q5b = l;
       if (v === '1' || v === '0') S.warnings.push('abschluesse_wenig');
       await showFeedback('q5a_' + v);
       S.step = 'q5b'; showStep(); break;
  
     case 'q5b':
-      S.answers.q5c = v;
+      S.answers.q5c = l;
       if (v === 'u60' || v === '61_99') S.warnings.push('gewinn_niedrig');
       S.step = 'q6'; showStep(); break;
  
@@ -904,7 +904,7 @@ async function handleAnswer(v, l) {
         appendFreifeld('ff-holder','z.B. 350','€/Monat','doKreditFF');
         return;
       }
-      S.answers.q6 = v;
+      S.answers.q6 = l;
       await reaktionKredit(v);
       S.step = 'q7'; showStep(); break;
  
@@ -925,21 +925,21 @@ async function handleAnswer(v, l) {
         appendFreifeld('ff-holder','z.B. 3200','€ netto/Mon.','doNettoFF');
         return;
       }
-      S.answers.q7 = v;
+      S.answers.q7 = l;
       if (v === 'under') { await doDisqual('einkommen'); return; }
       if (v === 't1') S.warnings.push('einkommen_knapp');
       setFinRange(v);
       S.step = 'q8'; showStep(); break;
  
     case 'q8':
-      S.answers.q8 = v;
+      S.answers.q8 = l;
       if (v === 'schlecht') { await doDisqual('schufa'); return; }
       if (v === 'mittel') S.warnings.push('zahlung_mittel');
       await showFeedback('q8_' + v);
       S.step = 'q9'; showStep(); break;
  
     case 'q9':
-      S.answers.q9 = v;
+      S.answers.q9 = l;
       if (v === 'u10') S.warnings.push('eigenkapital_wenig');
       await showFeedback('q9_' + v);
       // Kalkulations-Animation vor Gate
