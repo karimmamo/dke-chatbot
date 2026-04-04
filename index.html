@@ -243,6 +243,14 @@ body{font-family:'Inter',sans-serif;font-weight:300;background:var(--bg);color:v
   .chip{font-size:12px;padding:9px 12px}
 }
 </style>
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Ii init Di qi Sr Bi Zi Pi capture calculateEventProperties Yi register register_once register_for_session unregister unregister_for_session Xi getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Ji identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty Wi Vi createPersonProfile setInternalOrTestUser Gi Fi Ki opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing $i debug Tr Ui getPageViewId captureTraceFeedback captureTraceMetric Ri".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_CVL2ieuwvUkLAimHfwMVGN2vujb9dEXNVB4AccB3EDJd', {
+        api_host: 'https://eu.i.posthog.com',
+        defaults: '2026-01-30',
+        person_profiles: 'identified_only',
+    })
+</script>
 </head>
 <body>
  
@@ -519,6 +527,7 @@ async function doName() {
   }
   const name = capFirst(raw.trim().split(/\s+/)[0].toLowerCase());
   S.name = name;
+  posthog.capture('name_eingegeben');
   addUser(raw.trim());
   clearIA();
   await showTyping(2000);
@@ -827,11 +836,13 @@ async function handleAnswer(v, l) {
   switch (S.step) {
  
     case 'motiv':
+      posthog.capture('schritt_motiv_abgeschlossen', { antwort: l });
       S.answers.motiv = l;
       await showFeedback('motiv_' + v);
       S.step = 'q1'; showStep(); break;
  
     case 'q1':
+      posthog.capture('schritt_aufenthalt_abgeschlossen', { antwort: l });
       S.answers.q1 = l;
       if (v === 'kein') { await doDisqual('aufenthalt'); }
       else if (v === 'befristet') { S.step = 'q1a'; showStep(); }
@@ -839,22 +850,26 @@ async function handleAnswer(v, l) {
       break;
  
     case 'q1a':
+      posthog.capture('schritt_entfristung_abgeschlossen', { antwort: l });
       S.answers.q1a = l;
       if (v === 'bleibt') { await doDisqual('aufenthalt'); }
       else { S.warnings.push('aufenthalt_befristet'); S.step = 'q2'; showStep(); }
       break;
  
     case 'q2':
+      posthog.capture('schritt_familienstand_abgeschlossen', { antwort: l });
       S.answers.q2 = v;
       await showFeedback('q2_' + v);
       S.step = 'q3'; showStep(); break;
  
     case 'q3':
+      posthog.capture('schritt_kinder_abgeschlossen', { antwort: l });
       S.answers.q3 = v;
       await showFeedback('q3_' + v);
       S.step = 'q4'; showStep(); break;
  
     case 'q4':
+      posthog.capture('schritt_miete_abgeschlossen', { antwort: l });
       if (v === 'ff_miete') {
         // Re-render chips without freifeld chip selected, add input below
         setIA(chipsHTML([
@@ -874,6 +889,7 @@ async function handleAnswer(v, l) {
       S.step = 'q5'; showStep(); break;
  
     case 'q5':
+      posthog.capture('schritt_beschaeftigung_abgeschlossen', { antwort: l });
       S.answers.q5 = l;
       if (v === 'such') { await doDisqual('arbeit'); }
       else if (v === 'selbst') { await showFeedback('q5_selbst'); S.step = 'q5a'; showStep(); }
@@ -881,17 +897,20 @@ async function handleAnswer(v, l) {
       break;
  
     case 'q5a':
+      posthog.capture('schritt_jahresabschluesse_abgeschlossen', { antwort: l });
       S.answers.q5b = l;
       if (v === '1' || v === '0') S.warnings.push('abschluesse_wenig');
       await showFeedback('q5a_' + v);
       S.step = 'q5b'; showStep(); break;
  
     case 'q5b':
+      posthog.capture('schritt_jahresgewinn_abgeschlossen', { antwort: l });
       S.answers.q5c = l;
       if (v === 'u60' || v === '61_99') S.warnings.push('gewinn_niedrig');
       S.step = 'q6'; showStep(); break;
  
     case 'q6':
+      posthog.capture('schritt_kredite_abgeschlossen', { antwort: l });
       if (v === 'ff_kredit') {
         setIA(chipsHTML([
           {v:'0',l:'Keine laufenden Raten'},{v:'200',l:'Bis 200 €/Mon.'},
@@ -909,6 +928,7 @@ async function handleAnswer(v, l) {
       S.step = 'q7'; showStep(); break;
  
     case 'q7':
+      posthog.capture('schritt_einkommen_abgeschlossen', { antwort: l });
       if (v === 'ff_netto') {
         calcMin();
         const M = S.minNetto;
@@ -932,6 +952,7 @@ async function handleAnswer(v, l) {
       S.step = 'q8'; showStep(); break;
  
     case 'q8':
+      posthog.capture('schritt_zahlungshistorie_abgeschlossen', { antwort: l });
       S.answers.q8 = v;
       if (v === 'schlecht') { await doDisqual('schufa'); return; }
       if (v === 'mittel') S.warnings.push('zahlung_mittel');
@@ -939,6 +960,7 @@ async function handleAnswer(v, l) {
       S.step = 'q9'; showStep(); break;
  
     case 'q9':
+      posthog.capture('schritt_eigenkapital_abgeschlossen', { antwort: l });
       S.answers.q9 = l;
       if (v === 'u10') S.warnings.push('eigenkapital_wenig');
       await showFeedback('q9_' + v);
@@ -1126,6 +1148,7 @@ const DQ_MSG = {
 };
  
 async function doDisqual(reason) {
+  posthog.capture('lead_disqualifiziert', { grund: reason });
   setProgress(100);
   S.disqual = reason;
   S.qualified = false;
@@ -1184,6 +1207,7 @@ function buildGaugeSVG(pct) {
 // GATE
 // ─────────────────────────────────────────────────────────────
 function renderGate() {
+  posthog.capture('gate_erreicht');
   const div = document.createElement('div');
   div.className = 'gate-box';
   div.innerHTML = `
@@ -1407,6 +1431,7 @@ function renderCert() {
     </div>
   </div>`;
   $('msgs').appendChild(div);
+  posthog.capture('zertifikat_angezeigt', { qualifiziert: S.qualified });
   postHeight();
   // Scroll so certificate is visible from the TOP, not the bottom
   setTimeout(() => {
@@ -1422,6 +1447,12 @@ function renderCert() {
 // WEBHOOKS
 // ─────────────────────────────────────────────────────────────
 function fireWebhooks() {
+  posthog.capture('lead_submitted', {
+    name: S.name,
+    qualifiziert: S.qualified,
+    einkommen_stufe: S.answers.q7 || '',
+    investitionsmotiv: S.answers.motiv || ''
+  });
   const now = new Date();
   const id = `lead_${now.getTime()}`;
   const payload = {
@@ -1520,6 +1551,7 @@ async function init() {
 }
  
 async function startChat() {
+  posthog.capture('chatbot_gestartet');
   clearIA();
   addUser('Jetzt Finanzierbarkeit prüfen →');
   await showTyping(2200);
