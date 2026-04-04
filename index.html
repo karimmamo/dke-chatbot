@@ -904,7 +904,7 @@ async function handleAnswer(v, l) {
         appendFreifeld('ff-holder','z.B. 350','€/Monat','doKreditFF');
         return;
       }
-      S.answers.q6 = l;
+      S.answers.q6 = v;
       await reaktionKredit(v);
       S.step = 'q7'; showStep(); break;
  
@@ -1447,7 +1447,12 @@ function fireWebhooks() {
     beschaeftigung: S.answers.q5 || '',
     jahresabschluesse: S.answers.q5b || '',
     jahresgewinn: S.answers.q5c || '',
-    laufende_raten: S.answers.q6 || '',
+    laufende_raten: S.answers.q6 === '0' ? 'Keine laufenden Raten' :
+                S.answers.q6 === '200' ? 'Bis 200 €/Mon.' :
+                S.answers.q6 === '325' ? '200 – 400 €/Mon.' :
+                S.answers.q6 === '500' ? '400 – 600 €/Mon.' :
+                S.answers.q6 === '700' ? 'Über 600 €/Mon.' :
+                S.answers.q6 + ' €/Mon.' || '',
     einkommen_stufe: S.answers.q7 || '',
     zahlungshistorie: S.answers.q8 || '',
     eigenkapital: S.answers.q9 || '',
